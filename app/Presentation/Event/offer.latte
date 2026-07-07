@@ -1,0 +1,42 @@
+{block title}Nabídnout jízdu – {$event->title}{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-md-8 col-lg-6">
+			<div class="mb-4">
+				<a n:href="Event:detail, id => $event->id, slug => ($event->title|webalize)" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na {$event->title}
+				</a>
+			</div>
+
+			<div class="card shadow-sm">
+				<div class="card-body p-4">
+					<h1 class="h4 fw-bold mb-2">
+						<i class="bi bi-car-front-fill text-primary"></i> Nabídnout svezení
+					</h1>
+					<p class="text-muted mb-4">
+						{if $direction === 'back'}
+							<span class="badge bg-info mb-2 text-dark"><i class="bi bi-arrow-left"></i> Zpět z akce</span><br>
+							<i class="bi bi-geo-alt"></i> Z: <strong>{$event->location}</strong>
+						{else}
+							<span class="badge bg-primary mb-2 text-white"><i class="bi bi-arrow-right"></i> Tam na akci</span><br>
+							<i class="bi bi-geo-alt"></i> Cíl: <strong>{$event->location}</strong>
+						{/if}
+						<span class="mx-1">·</span>
+						<i class="bi bi-calendar3"></i> {$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+					</p>
+
+					{control offerRideForm}
+
+					<div class="mt-4 pt-3 border-top text-muted small">
+						<i class="bi bi-shield-check text-primary"></i>
+						Odesláním formuláře berete na vědomí zpracování osobních údajů (jméno, e-mail) za účelem koordinace spolujízdy.
+						Více informací naleznete v <a n:href="Home:gdpr" target="_blank" class="text-decoration-underline text-secondary">Zásadách ochrany osobních údajů (GDPR)</a>.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

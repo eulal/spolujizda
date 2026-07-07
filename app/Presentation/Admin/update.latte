@@ -1,0 +1,214 @@
+{block title}Aktualizace systému{/block}
+
+{block content}
+<div class="container py-5">
+	{* ── Administrační navigace ── *}
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-2 d-flex align-items-center flex-wrap gap-2">
+					<a n:href="Admin:default" class="btn btn-sm btn-light">
+						<i class="bi bi-speedometer2 me-1"></i> Nástěnka
+					</a>
+					<a n:href="Admin:events" class="btn btn-sm btn-light">
+						<i class="bi bi-calendar-event me-1"></i> Správa akcí
+					</a>
+					<a n:href="Admin:settings" class="btn btn-sm btn-light">
+						<i class="bi bi-sliders me-1"></i> Nastavení
+					</a>
+					<a n:href="Admin:update" class="btn btn-sm btn-primary">
+						<i class="bi bi-arrow-repeat me-1"></i> Aktualizace
+						{if !empty($updateAvailable)}
+							<span class="badge bg-danger ms-1">Nová verze</span>
+						{/if}
+						{if !empty($pendingMigrationsCount)}
+							<span class="badge bg-warning text-dark ms-1">{$pendingMigrationsCount}</span>
+						{/if}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-4">
+		<h1 class="h3 fw-bold">
+			<i class="bi bi-arrow-repeat text-primary"></i> Aktualizace systému
+		</h1>
+	</div>
+
+	{* ── Aktuální stav ── *}
+	<div class="row g-4 mb-4">
+		<div class="col-md-6">
+			<div class="card border-0 shadow-sm h-100">
+				<div class="card-body p-4">
+					<h5 class="card-title fw-bold mb-3">
+						<i class="bi bi-info-circle text-primary me-2"></i> Verze
+					</h5>
+					<div class="d-flex align-items-center gap-3 mb-3">
+						<div>
+							<div class="text-muted small">Nainstalovaná verze</div>
+							<div class="fs-4 fw-bold text-dark">{$updateInfo['current']}</div>
+						</div>
+						{if $updateInfo['latest']}
+							<div class="text-muted"><i class="bi bi-arrow-right fs-4"></i></div>
+							<div>
+								<div class="text-muted small">Nejnovější verze</div>
+								<div class="fs-4 fw-bold {if $updateInfo['available']}text-success{else}text-dark{/if}">
+									{$updateInfo['latest']}
+								</div>
+							</div>
+						{/if}
+					</div>
+
+					{if $updateInfo['available']}
+						<div class="alert alert-success d-flex align-items-center mb-0" role="alert">
+							<i class="bi bi-download me-2 fs-5"></i>
+							<div>
+								<strong>Nová verze je k dispozici!</strong>
+								<div class="small">Klikněte na tlačítko níže pro aktualizaci.</div>
+							</div>
+						</div>
+					{elseif $updateInfo['error']}
+						<div class="alert alert-warning d-flex align-items-center mb-0" role="alert">
+							<i class="bi bi-exclamation-triangle me-2 fs-5"></i>
+							<div>
+								<strong>Nelze zkontrolovat aktualizace</strong>
+								<div class="small">{$updateInfo['error']}</div>
+							</div>
+						</div>
+					{else}
+						<div class="alert alert-light d-flex align-items-center mb-0" role="alert">
+							<i class="bi bi-check-circle text-success me-2 fs-5"></i>
+							<div>
+								<strong>Aplikace je aktuální</strong>
+								<div class="small text-muted">Máte nainstalovanou nejnovější verzi.</div>
+							</div>
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+
+		{* ── Akce ── *}
+		<div class="col-md-6">
+			<div class="card border-0 shadow-sm h-100">
+				<div class="card-body p-4">
+					<h5 class="card-title fw-bold mb-3">
+						<i class="bi bi-tools text-primary me-2"></i> Akce
+					</h5>
+
+					<div class="d-grid gap-2">
+						{if $updateInfo['available']}
+							<a n:href="performUpdate!" class="btn btn-success btn-lg fw-bold"
+							   onclick="return confirm('Opravdu chcete aktualizovat na verzi {$updateInfo['latest']}?\n\nBěhem aktualizace bude aplikace krátkodobě nedostupná.')">
+								<i class="bi bi-download me-1"></i> Aktualizovat na {$updateInfo['latest']}
+							</a>
+						{/if}
+
+						<a n:href="checkUpdate!" class="btn btn-outline-primary">
+							<i class="bi bi-arrow-clockwise me-1"></i> Zkontrolovat aktualizace
+						</a>
+
+						<a n:href="runMigrations!" class="btn btn-outline-secondary"
+						   onclick="return confirm('Spustit čekající databázové migrace?')">
+							<i class="bi bi-database-gear me-1"></i> Spustit migrace ({count($pendingMigrations)})
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{* ── Výsledek poslední operace ── *}
+	{if isset($updateLog) && $updateLog}
+		<div class="card border-0 shadow-sm mb-4">
+			<div class="card-body p-4">
+				<h5 class="card-title fw-bold mb-3">
+					<i class="bi bi-terminal text-primary me-2"></i> Výstup
+				</h5>
+				<pre class="bg-dark text-light p-3 rounded mb-0" style="max-height: 400px; overflow-y: auto; font-size: 0.875rem;">{foreach $updateLog as $line}
+{$line}
+{/foreach}</pre>
+			</div>
+		</div>
+	{/if}
+
+	{* ── Systémové požadavky ── *}
+	{var $reqLabels = ['git' => 'Git', 'git_remote' => 'Git Remote', 'composer' => 'Composer', 'exec' => 'Funkce exec()', 'writable' => 'Zápis do projektu', 'temp' => 'Zápis do temp/', 'git_auth' => 'Autentizace']}
+	<div class="card border-0 shadow-sm mb-4">
+		<div class="card-body p-4">
+			<h5 class="card-title fw-bold mb-3">
+				<i class="bi bi-shield-check text-primary me-2"></i> Systémové požadavky
+			</h5>
+			<div class="table-responsive">
+				<table class="table table-sm mb-0">
+					<tbody>
+						{foreach $requirements as $key => $req}
+							<tr>
+								<td style="width: 30px;">
+									{if $req['ok']}
+										<i class="bi bi-check-circle-fill text-success"></i>
+									{else}
+										<i class="bi bi-x-circle-fill text-danger"></i>
+									{/if}
+								</td>
+								<td class="fw-medium">
+									{$reqLabels[$key] ?? $key}
+								</td>
+								<td class="text-muted small">{$req['message']}</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	{* ── Migrace ── *}
+	<div class="row g-4">
+		<div class="col-md-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-4">
+					<h5 class="card-title fw-bold mb-3">
+						<i class="bi bi-clock-history text-primary me-2"></i> Provedené migrace
+					</h5>
+					{if $executedMigrations}
+						<ul class="list-group list-group-flush">
+							{foreach $executedMigrations as $migration}
+								<li class="list-group-item d-flex justify-content-between align-items-center px-0">
+									<code class="small">{$migration->filename}</code>
+									<span class="badge bg-success">✓</span>
+								</li>
+							{/foreach}
+						</ul>
+					{else}
+						<p class="text-muted small mb-0">Zatím nebyly provedeny žádné migrace.</p>
+					{/if}
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-4">
+					<h5 class="card-title fw-bold mb-3">
+						<i class="bi bi-hourglass-split text-warning me-2"></i> Čekající migrace
+					</h5>
+					{if $pendingMigrations}
+						<ul class="list-group list-group-flush">
+							{foreach $pendingMigrations as $migration}
+								<li class="list-group-item d-flex justify-content-between align-items-center px-0">
+									<code class="small">{$migration}</code>
+									<span class="badge bg-warning text-dark">čeká</span>
+								</li>
+							{/foreach}
+						</ul>
+					{else}
+						<p class="text-muted small mb-0">Žádné čekající migrace.</p>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

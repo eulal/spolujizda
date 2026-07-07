@@ -1,0 +1,34 @@
+services:
+	- App\Core\RouterFactory::createRouter
+
+	security.authenticator:
+		factory: App\Core\AdminAuthenticator(adminPasswordHash: %adminPasswordHash%)
+
+	- App\Model\EmailService(
+		baseUrl: %baseUrl%
+		mailFrom: %mailFrom%
+		mailFromName: %mailFromName%
+	)
+
+	- App\Model\Co2Service(
+		co2EmissionFactor: %co2EmissionFactor%
+	)
+
+	- App\Core\UpdateService(
+		githubRepo: %githubRepo%
+		githubToken: %githubToken%
+	)
+
+
+search:
+	-	in: %appDir%
+		classes:
+			- *Facade
+			- *Factory
+			- *Repository
+			- *Service
+		exclude:
+			classes:
+				- App\Model\EmailService  # registrována ručně kvůli parametrům
+				- App\Model\Co2Service    # registrována ručně kvůli parametrům
+				- App\Core\UpdateService  # registrována ručně kvůli parametrům

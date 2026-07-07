@@ -1,0 +1,25 @@
+{block title}Nová akce{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-md-8 col-lg-6">
+			<div class="mb-4">
+				<a n:href="events" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na seznam
+				</a>
+			</div>
+
+			<div class="card shadow-sm">
+				<div class="card-body p-4">
+					<h1 class="h4 fw-bold mb-4">
+						<i class="bi bi-calendar-plus text-primary"></i> Vytvořit novou akci
+					</h1>
+
+					{control createEventForm}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

@@ -1,0 +1,36 @@
+# see https://doc.nette.org/en/configuring
+
+parameters:
+	adminPasswordHash: ''  # přepíše se v local.neon
+	baseUrl: ''
+	mailFrom: 'noreply@example.com'
+	mailFromName: 'Spolujízda'
+	co2EmissionFactor: 0.150  # kg CO2/km – průměrné emise osobního auta v ČR
+	githubRepo: 'owner/repo'  # přepíše se v local.neon
+	githubToken: ''  # PAT pro privátní repo (nastaví se v local.neon)
+	gdprAuthor: ''
+	gdprEmail: ''
+	gdprText: ''
+
+
+application:
+	errorPresenter:
+		4xx: Error:Error4xx
+		5xx: Error:Error5xx
+	mapping: App\Presentation\*\**Presenter
+
+
+session:
+	expiration: 14 days
+
+
+latte:
+	strictParsing: yes
+	extensions:
+		- App\Presentation\Accessory\LatteExtension
+
+
+di:
+	export:
+		parameters: no
+		tags: no

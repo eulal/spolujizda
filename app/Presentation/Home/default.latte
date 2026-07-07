@@ -1,0 +1,176 @@
+{block title}Spolujízda – Sdílené jízdy na akce{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="text-center mb-5">
+		<h1 class="fw-bold mb-3">
+			<i class="bi bi-car-front-fill text-primary"></i> Spolujízda
+		</h1>
+		<p class="lead text-muted">
+			Plánujte sdílené jízdy na semináře a akce. Nabídněte místo v autě, nebo najděte svezení.
+		</p>
+	</div>
+
+	{if $sharedRideCount > 0}
+		<div class="co2-banner mb-5">
+			<div class="row align-items-center g-4">
+				<div class="col-md-4 text-center">
+					<div class="co2-number">{$totalSavedCo2|number:1, ',', ' '}</div>
+					<div class="co2-unit">kg CO₂ ušetřeno</div>
+				</div>
+				<div class="col-md-4 text-center">
+					<div class="co2-stat">
+						<i class="bi bi-people-fill"></i>
+						<span class="co2-stat-number">{$totalPassengers}</span>
+						<span class="co2-stat-label">spolujezdců a spolujezdkyň</span>
+					</div>
+					<div class="co2-stat mt-2">
+						<i class="bi bi-car-front-fill"></i>
+						<span class="co2-stat-number">{$sharedRideCount}</span>
+						<span class="co2-stat-label">sdílených jízd</span>
+					</div>
+				</div>
+				<div class="col-md-4 text-center">
+					<i class="bi bi-tree-fill co2-tree-icon"></i>
+					<div class="co2-equiv">
+						{var $trees = $totalSavedCo2 / 22}
+						≈ {$trees|number:0, ',', ' '} {$trees >= 2 && $trees <= 4 ? 'stromy' : ($trees == 1 ? 'strom' : 'stromů')} ročně
+					</div>
+					<a n:href="co2Metodologie" class="co2-methodology-link">
+						<i class="bi bi-info-circle"></i> Jak počítáme?
+					</a>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<h2 class="h4 fw-bold mb-4">
+		<i class="bi bi-calendar-event text-primary"></i> Nadcházející akce
+	</h2>
+
+	{if $upcomingEvents}
+		<div class="row g-4 mb-5">
+			{foreach $upcomingEvents as $event}
+				<div class="col-12 col-md-6">
+					<div class="card h-100 position-relative">
+						<div class="card-body">
+							<h5 class="card-title fw-bold">{$event->title}</h5>
+							<div class="mb-2">
+								<small class="text-muted">
+									<i class="bi bi-geo-alt"></i> {$event->location}
+								</small>
+							</div>
+							<div class="mb-3">
+								<small class="text-muted">
+									<i class="bi bi-calendar3"></i>
+									{$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+								</small>
+							</div>
+							{if $event->description}
+								<p class="card-text text-muted small">{$event->description|breakLines}</p>
+							{/if}
+							
+							<div class="border-top pt-3 mt-3">
+								{var $rideCountThere = $eventRepository->getRideCount($event->id, 'there')}
+								{var $seatCountThere = $eventRepository->getAvailableSeatsCount($event->id, 'there')}
+								{var $requestCountThere = $eventRepository->getRequestCount($event->id, 'there')}
+								{var $rideCountBack = $eventRepository->getRideCount($event->id, 'back')}
+								{var $seatCountBack = $eventRepository->getAvailableSeatsCount($event->id, 'back')}
+								{var $requestCountBack = $eventRepository->getRequestCount($event->id, 'back')}
+								
+								<div class="row g-2 text-center">
+									<div class="col-6 border-end">
+										<div class="small fw-semibold text-muted mb-2">
+											<i class="bi bi-arrow-right text-primary"></i> Tam (na akci)
+										</div>
+										<div class="d-flex flex-column gap-1 align-items-center">
+											<span class="badge bg-primary-subtle text-primary border border-primary-subtle py-1.5 px-2 w-100" style="max-width: 130px; font-size: 0.8rem;">
+												<i class="bi bi-car-front-fill"></i> {$rideCountThere} {$rideCountThere === 1 ? 'jízda' : ($rideCountThere >= 2 && $rideCountThere <= 4 ? 'jízdy' : 'jízd')}
+											</span>
+											<span class="badge bg-success-subtle text-success border border-success-subtle py-1.5 px-2 w-100" style="max-width: 130px; font-size: 0.8rem;">
+												<i class="bi bi-person-plus-fill"></i> {$seatCountThere} volných
+											</span>
+											{if $requestCountThere > 0}
+												<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle py-1.5 px-2 w-100" style="max-width: 130px; font-size: 0.8rem;">
+													<i class="bi bi-hand-index-fill"></i> {$requestCountThere} {$requestCountThere === 1 ? 'poptávka' : ($requestCountThere >= 2 && $requestCountThere <= 4 ? 'poptávky' : 'poptávek')}
+												</span>
+											{/if}
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="small fw-semibold text-muted mb-2">
+											<i class="bi bi-arrow-left text-primary"></i> Zpět (z akce)
+										</div>
+										<div class="d-flex flex-column gap-1 align-items-center">
+											<span class="badge bg-primary-subtle text-primary border border-primary-subtle py-1.5 px-2 w-100" style="max-width: 130px; font-size: 0.8rem;">
+												<i class="bi bi-car-front-fill"></i> {$rideCountBack} {$rideCountBack === 1 ? 'jízda' : ($rideCountBack >= 2 && $rideCountBack <= 4 ? 'jízdy' : 'jízd')}
+											</span>
+											<span class="badge bg-success-subtle text-success border border-success-subtle py-1.5 px-2 w-100" style="max-width: 130px; font-size: 0.8rem;">
+												<i class="bi bi-person-plus-fill"></i> {$seatCountBack} volných
+											</span>
+											{if $requestCountBack > 0}
+												<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle py-1.5 px-2 w-100" style="max-width: 130px; font-size: 0.8rem;">
+													<i class="bi bi-hand-index-fill"></i> {$requestCountBack} {$requestCountBack === 1 ? 'poptávka' : ($requestCountBack >= 2 && $requestCountBack <= 4 ? 'poptávky' : 'poptávek')}
+												</span>
+											{/if}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer bg-transparent border-0 pb-3">
+							<a n:href="Event:detail, id => $event->id, slug => ($event->title|webalize)" class="btn btn-primary w-100 stretched-link">
+								<i class="bi bi-arrow-right"></i> Zobrazit jízdy
+							</a>
+						</div>
+					</div>
+				</div>
+			{/foreach}
+		</div>
+	{else}
+		<div class="empty-state">
+			<i class="bi bi-calendar-x"></i>
+			<h5>Žádné nadcházející akce</h5>
+			<p class="text-muted">Momentálně nejsou vypsány žádné akce. Zkuste to později.</p>
+		</div>
+	{/if}
+
+	{if $pastEvents}
+		<hr class="my-5">
+		<h2 class="h5 text-muted mb-4">
+			<i class="bi bi-clock-history"></i> Proběhlé akce
+		</h2>
+		<div class="row g-3">
+			{foreach $pastEvents as $event}
+				{var $savedCo2 = $co2Service->getEventSavedCo2($event->id)}
+				{var $rideCount = $eventRepository->getRideCount($event->id)}
+				{var $passengerCount = $eventRepository->getPassengerCount($event->id)}
+				<div class="col-12 col-sm-6 col-md-4 col-lg-3">
+					<div class="card h-100" style="opacity: 0.7;">
+						<div class="card-body d-flex flex-column justify-content-between">
+							<div>
+								<h6 class="card-title fw-bold">{$event->title}</h6>
+								<small class="text-muted">
+									<i class="bi bi-geo-alt"></i> {$event->location} ·
+									<i class="bi bi-calendar3"></i> {$event->date_from|date:'j. n. Y'}
+								</small>
+							</div>
+							<div class="d-flex flex-wrap gap-1 mt-2">
+								<span class="badge {if $savedCo2 > 0}bg-success-subtle text-success border border-success-subtle{else}bg-light text-secondary border{/if} fw-bold" title="Celkem ušetřeno CO₂ spolujízdou">
+									<i class="bi bi-tree-fill"></i> {$savedCo2} kg CO₂
+								</span>
+								<span class="badge {if $rideCount > 0}bg-primary-subtle text-primary border border-primary-subtle{else}bg-light text-secondary border{/if} fw-bold" title="Počet spolujízd">
+									<i class="bi bi-car-front-fill"></i> {$rideCount} {$rideCount === 1 ? 'jízda' : ($rideCount >= 2 && $rideCount <= 4 ? 'jízdy' : 'jízd')}
+								</span>
+								<span class="badge {if $passengerCount > 0}bg-info-subtle text-info-emphasis border border-info-subtle{else}bg-light text-secondary border{/if} fw-bold" title="Počet spolujezdců">
+									<i class="bi bi-people-fill"></i> {$passengerCount} {$passengerCount === 1 ? 'spolujezdec' : ($passengerCount >= 2 && $passengerCount <= 4 ? 'spolujezdci' : 'spolujezdců')}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/foreach}
+		</div>
+	{/if}
+</div>
+{/block}

@@ -1,0 +1,7 @@
+/vendor/*
+/temp/*
+!/temp/.gitkeep
+/log/*
+!/log/.gitkeep
+/config/local.neon
+.env

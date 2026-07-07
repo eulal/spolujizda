@@ -1,0 +1,49 @@
+# Zkopírujte jako local.neon a vyplňte skutečné hodnoty
+# Tento soubor NEDÁVEJTE do Gitu!
+
+parameters:
+	# Heslo pro admin rozhraní – vygenerujte bcrypt hash:
+	# php -r "echo password_hash('vase_heslo', PASSWORD_BCRYPT);"
+	adminPasswordHash: '$2y$10$CHANGE_ME'
+
+	# URL aplikace (pro odkazy v e-mailech)
+	baseUrl: 'https://spolujizda.example.com'
+
+	# Odchozí adresa pro e-maily
+	mailFrom: 'noreply@example.com'
+
+	# Jméno odesílatele e-mailů
+	mailFromName: 'Spolujízda'
+
+	# Faktor emisí CO2 (kg CO2/km)
+	co2EmissionFactor: 0.15
+
+	# GitHub repozitář pro kontrolu aktualizací
+	githubRepo: 'owner/repo'
+
+	# GitHub Personal Access Token (pouze pro privátní repozitáře)
+	# Vytvořte na: https://github.com/settings/tokens → Fine-grained tokens
+	# Potřebná oprávnění: Contents (read), Metadata (read)
+	githubToken: ''
+
+	# Název správce osobních údajů (organizace) – volitelné, výchozí je mailFromName
+	gdprAuthor: ''
+
+	# E-mail pro dotazy k ochraně osobních údajů – volitelné, výchozí je mailFrom
+	gdprEmail: ''
+
+	# Vlastní text ochrany osobních údajů (volitelně přepisuje výchozí šablonu, podporuje HTML)
+	gdprText: ''
+
+database:
+	dsn: 'mysql:host=127.0.0.1;dbname=spolujizda'
+	user: 'spolujizda'
+	password: 'secret'
+
+mail:
+	smtp: true
+	host: 'smtp.example.com'
+	port: 587
+	username: 'noreply@example.com'
+	password: 'smtp_password'
+	secure: 'tls'

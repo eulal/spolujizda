@@ -1,0 +1,190 @@
+{block title}Nástěnka{/block}
+
+{block content}
+<div class="container py-5">
+	{* ── Upozornění na novou verzi ── *}
+	{if !empty($updateAvailable)}
+		<div class="alert alert-success d-flex align-items-center justify-content-between mb-4 shadow-sm border-0" role="alert">
+			<div class="d-flex align-items-center">
+				<i class="bi bi-download fs-4 me-3"></i>
+				<div>
+					<strong>Nová verze {$latestVersion} je k dispozici!</strong>
+					<div class="small">Aktuální verze: {$currentVersion}</div>
+				</div>
+			</div>
+			<a n:href="update" class="btn btn-success btn-sm fw-bold">
+				<i class="bi bi-arrow-repeat me-1"></i> Aktualizovat
+			</a>
+		</div>
+	{/if}
+
+	{* ── Administrační navigace ── *}
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-2 d-flex align-items-center flex-wrap gap-2">
+					<a n:href="Admin:default" class="btn btn-sm btn-primary">
+						<i class="bi bi-speedometer2 me-1"></i> Nástěnka
+					</a>
+					<a n:href="Admin:events" class="btn btn-sm btn-light">
+						<i class="bi bi-calendar-event me-1"></i> Správa akcí
+					</a>
+					<a n:href="Admin:settings" class="btn btn-sm btn-light">
+						<i class="bi bi-sliders me-1"></i> Nastavení
+					</a>
+					<a n:href="Admin:update" class="btn btn-sm btn-light">
+						<i class="bi bi-arrow-repeat me-1"></i> Aktualizace
+						{if !empty($updateAvailable)}
+							<span class="badge bg-danger ms-1">Nová verze</span>
+						{/if}
+						{if !empty($pendingMigrationsCount)}
+							<span class="badge bg-warning text-dark ms-1">{$pendingMigrationsCount}</span>
+						{/if}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{* ── Statistiky ── *}
+	<div class="row g-3 mb-4">
+		<div class="col-6 col-md-3">
+			<div class="card border-0 shadow-sm text-center h-100 bg-white">
+				<div class="card-body p-3">
+					<div class="text-muted small fw-medium mb-1">Plánované akce</div>
+					<div class="fs-3 fw-bold text-primary">{$statsPlannedEvents}</div>
+					<div class="small text-muted">z {$statsTotalEvents} celkem</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-6 col-md-3">
+			<div class="card border-0 shadow-sm text-center h-100 bg-white">
+				<div class="card-body p-3">
+					<div class="text-muted small fw-medium mb-1">Spolucestující</div>
+					<div class="fs-3 fw-bold text-success">{$statsTotalPassengers}</div>
+					<div class="small text-muted">absolvovaných jízd</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-6 col-md-3">
+			<div class="card border-0 shadow-sm text-center h-100 bg-white">
+				<div class="card-body p-3">
+					<div class="text-muted small fw-medium mb-1">Ušetřeno CO₂</div>
+					<div class="fs-3 fw-bold text-info">{$statsTotalSavedCo2} kg</div>
+					<div class="small text-muted">sdílením aut</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-6 col-md-3">
+			<div class="card border-0 shadow-sm text-center h-100 bg-white">
+				<div class="card-body p-3">
+					<div class="text-muted small fw-medium mb-1">Verze systému</div>
+					<div class="fs-3 fw-bold text-secondary">v{$currentVersion}</div>
+					<div class="small text-muted">
+						{if !empty($updateAvailable)}
+							<span class="text-danger fw-semibold"><i class="bi bi-exclamation-circle-fill"></i> Update!</span>
+						{else}
+							<span class="text-success"><i class="bi bi-check-circle-fill"></i> Aktuální</span>
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		{* ── Přehled plánovaných akcí ── *}
+		<div class="col-12">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-4">
+					<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+						<h5 class="card-title fw-bold mb-0">
+							<i class="bi bi-calendar-check text-primary me-2"></i> Nejbližší plánované akce
+						</h5>
+						<div class="d-flex gap-2">
+							<a n:href="create" class="btn btn-sm btn-success fw-bold px-3">
+								<i class="bi bi-plus-lg me-1"></i> Nová akce
+							</a>
+							<a n:href="Admin:events" class="btn btn-sm btn-outline-primary fw-bold px-3">
+								Zobrazit všechny ({$statsTotalEvents}) <i class="bi bi-arrow-right ms-1"></i>
+							</a>
+						</div>
+					</div>
+
+					{if $upcomingEventsPreview}
+						<div class="table-responsive">
+							<table class="table table-hover align-middle mb-0">
+								<thead class="table-light">
+									<tr>
+										<th>Název</th>
+										<th>Místo</th>
+										<th>Datum</th>
+										<th class="text-center">Jízdy</th>
+										<th class="text-center">Volná místa</th>
+										<th class="text-center">Poptávky</th>
+										<th class="text-center">Stav</th>
+										<th class="text-end">Odkaz</th>
+									</tr>
+								</thead>
+								<tbody>
+									{foreach $upcomingEventsPreview as $event}
+										{var $rideCount = $eventRepository->getRideCount($event->id)}
+										{var $seatCount = $eventRepository->getAvailableSeatsCount($event->id)}
+										{var $totalSeatCount = $eventRepository->getTotalSeatsCount($event->id)}
+										{var $reqCount = $eventRepository->getRequestCount($event->id)}
+										<tr>
+											<td>
+												<a n:href="detail $event->id" class="fw-bold text-decoration-none">
+													{$event->title}
+												</a>
+											</td>
+											<td class="text-muted">{$event->location}</td>
+											<td class="text-muted small text-nowrap">
+												{$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+											</td>
+											<td class="text-center">
+												<span class="badge bg-primary">{$rideCount}</span>
+											</td>
+											<td class="text-center">
+												<span class="badge bg-{$seatCount > 0 ? 'success' : 'secondary'}">{$seatCount}/{$totalSeatCount}</span>
+											</td>
+											<td class="text-center">
+												{if $reqCount > 0}
+													<span class="badge bg-warning text-dark">{$reqCount}</span>
+												{else}
+													<span class="text-muted">0</span>
+												{/if}
+											</td>
+											<td class="text-center">
+												{if $event->is_active}
+													<span class="badge bg-success">Aktivní</span>
+												{else}
+													<span class="badge bg-danger">Neaktivní</span>
+												{/if}
+											</td>
+											<td class="text-end">
+												<a n:href="Admin:detail $event->id" class="btn btn-sm btn-light" title="Detail akce v administraci">
+													<i class="bi bi-eye"></i> Detail
+												</a>
+											</td>
+										</tr>
+									{/foreach}
+								</tbody>
+							</table>
+						</div>
+					{else}
+						<div class="empty-state py-4 text-center">
+							<i class="bi bi-calendar-plus text-muted mb-2" style="font-size: 2.5rem;"></i>
+							<h5>Žádné nadcházející akce</h5>
+							<p class="text-muted small">Aktuálně se neplánuje žádná nadcházející akce.</p>
+							<a n:href="create" class="btn btn-sm btn-primary mt-1">
+								<i class="bi bi-plus-lg"></i> Vytvořit novou akci
+							</a>
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

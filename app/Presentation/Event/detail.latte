@@ -1,0 +1,163 @@
+{block title}{$event->title} – Spolujízda{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="mb-4">
+		<a n:href="Home:default" class="text-decoration-none text-muted">
+			<i class="bi bi-arrow-left"></i> Zpět na přehled akcí
+		</a>
+	</div>
+
+	{* Hlavička akce *}
+	<div class="mb-4">
+		<h1 class="fw-bold mb-2">{$event->title}</h1>
+		<p class="text-muted mb-0">
+			<i class="bi bi-geo-alt"></i> {$event->location}
+			<span class="mx-2">·</span>
+			<i class="bi bi-calendar3"></i> {$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+		</p>
+		{if $event->description}
+			<p class="text-muted mt-2 mb-0">{$event->description|breakLines}</p>
+		{/if}
+	</div>
+
+	{if $isPastEvent}
+		<div class="alert alert-warning mb-4 d-flex align-items-center gap-2">
+			<i class="bi bi-exclamation-triangle-fill fs-5 text-warning"></i>
+			<div>Tato akce již skončila ({$event->date_to|date:'j. n. Y'}). Již není možné nabízet ani poptávat spolujízdu.</div>
+		</div>
+	{/if}
+
+	{* Taby směr *}
+	<ul class="nav nav-tabs mb-4" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link {if $direction === 'there'}active{/if}"
+			   n:href="detail $event->id, smer => there">
+				<i class="bi bi-arrow-right"></i> Tam (na akci)
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link {if $direction === 'back'}active{/if}"
+			   n:href="detail $event->id, smer => back">
+				<i class="bi bi-arrow-left"></i> Zpět (z akce)
+			</a>
+		</li>
+	</ul>
+
+	{* Nadpis a akční tlačítka v jednom řádku *}
+	<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+		<h2 class="h5 fw-bold mb-0">
+			<i class="bi bi-car-front text-primary"></i>
+			Nabídky jízd {$direction === 'there' ? 'tam' : 'zpět'}
+		</h2>
+		{if !$isPastEvent}
+			<div class="d-flex gap-2">
+				<a n:href="offer $event->id, smer => $direction" class="btn btn-primary">
+					<i class="bi bi-car-front-fill"></i> Nabízím svezení {$direction === 'there' ? 'tam' : 'zpět'}
+				</a>
+				<a n:href="request $event->id, smer => $direction" class="btn btn-warning text-dark">
+					<i class="bi bi-hand-index-fill"></i> Hledám svezení {$direction === 'there' ? 'tam' : 'zpět'}
+				</a>
+			</div>
+		{/if}
+	</div>
+
+	{if $rides}
+		<div class="row g-3 mb-5">
+			{foreach $rides as $ride}
+				{var $passengerCount = $rideRepository->getPassengerCount($ride->id)}
+				{var $available = $ride->total_seats - $passengerCount}
+				{var $isFull = $available <= 0}
+				{var $isPastRide = $ride->departure_time < $now}
+				{var $isMine = isset($myRideTokens[$ride->id])}
+
+				<div class="col-md-6">
+					<div class="card card-ride {if $isFull}card-ride--full{/if} {if $isPastRide}opacity-75 bg-light{/if} {if $isMine}border-primary{/if}">
+						<div class="card-body">
+							{if $isMine}
+								<span class="badge bg-primary mb-2">Vaše nabídka</span>
+							{/if}
+							{if $isPastRide}
+								<span class="badge bg-secondary mb-2">Jízda již proběhla</span>
+							{/if}
+
+							<div class="d-flex justify-content-between align-items-start mb-2">
+								<h5 class="card-title fw-bold mb-0">
+									<i class="bi bi-person-fill text-primary"></i> {$ride->driver_name}
+								</h5>
+								{if $isPastRide}
+									<span class="badge bg-secondary badge-seats">
+										<i class="bi bi-clock-history"></i> Proběhlo
+									</span>
+								{elseif $isFull}
+									<span class="badge bg-danger badge-seats">
+										<i class="bi bi-x-circle"></i> 0 míst z {$ride->total_seats}
+									</span>
+								{else}
+									<span class="badge bg-success badge-seats">
+										<i class="bi bi-person-plus"></i> {$available} voln{$available === 1 ? 'é' : ($available >= 2 && $available <= 4 ? 'á' : 'ých')} míst{$available === 1 ? 'o' : ($available >= 2 && $available <= 4 ? 'a' : '')} z {$ride->total_seats}
+									</span>
+								{/if}
+							</div>
+
+
+							<div class="mb-2">
+								<i class="bi bi-geo-alt text-primary"></i>
+								{if $ride->direction === 'back'}
+									{$event->location}
+									{if $ride->route_via}
+										<small class="text-muted">→ {$ride->route_via}</small>
+									{/if}
+									→ <strong>{$ride->departure_city}</strong>
+									{if $ride->departure_place}
+										<small class="text-muted">({$ride->departure_place})</small>
+									{/if}
+								{else}
+									<strong>{$ride->departure_city}</strong>
+									{if $ride->departure_place}
+										<small class="text-muted">({$ride->departure_place})</small>
+									{/if}
+									{if $ride->route_via}
+										<small class="text-muted">→ {$ride->route_via}</small>
+									{/if}
+									→ {$event->location}
+								{/if}
+							</div>
+
+							<div class="mb-2">
+								<i class="bi bi-clock text-primary"></i>
+								{$ride->departure_time|date:'j. n. Y'} v {$ride->departure_time|date:'H:i'}
+							</div>
+
+							{if $ride->note}
+								<div class="mb-3">
+									<i class="bi bi-chat-text text-muted"></i>
+									<small class="text-muted">{$ride->note|breakLines}</small>
+								</div>
+							{/if}
+
+							<div class="d-flex gap-2">
+								<a n:href="Ride:detail $ride->id" class="btn btn-sm btn-outline-primary">
+									<i class="bi bi-eye"></i> Detail
+								</a>
+								{if !$isFull && !$isPastRide}
+									<a n:href="Ride:join $ride->id" class="btn btn-sm btn-primary">
+										<i class="bi bi-person-plus"></i> Přihlásit se
+									</a>
+								{/if}
+							</div>
+						</div>
+					</div>
+				</div>
+			{/foreach}
+		</div>
+	{else}
+		<div class="empty-state mb-5">
+			<i class="bi bi-car-front"></i>
+			<h5>Zatím žádné nabídky jízd</h5>
+			<p class="text-muted">Buďte první – nabídněte místo ve svém autě!</p>
+		</div>
+	{/if}
+
+</div>
+{/block}

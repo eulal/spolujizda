@@ -1,0 +1,177 @@
+{block title}Správa akcí{/block}
+
+{block content}
+<div class="container py-5">
+	{* ── Administrační navigace ── *}
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-2 d-flex align-items-center flex-wrap gap-2">
+					<a n:href="Admin:default" class="btn btn-sm btn-light">
+						<i class="bi bi-speedometer2 me-1"></i> Nástěnka
+					</a>
+					<a n:href="Admin:events" class="btn btn-sm btn-primary">
+						<i class="bi bi-calendar-event me-1"></i> Správa akcí
+					</a>
+					<a n:href="Admin:settings" class="btn btn-sm btn-light">
+						<i class="bi bi-sliders me-1"></i> Nastavení
+					</a>
+					<a n:href="Admin:update" class="btn btn-sm btn-light">
+						<i class="bi bi-arrow-repeat me-1"></i> Aktualizace
+						{if !empty($updateAvailable)}
+							<span class="badge bg-danger ms-1">Nová verze</span>
+						{/if}
+						{if !empty($pendingMigrationsCount)}
+							<span class="badge bg-warning text-dark ms-1">{$pendingMigrationsCount}</span>
+						{/if}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h1 class="h3 fw-bold mb-0">
+			<i class="bi bi-calendar-event text-primary me-2"></i> Správa akcí
+		</h1>
+		<a n:href="create" class="btn btn-primary">
+			<i class="bi bi-plus-lg"></i> Nová akce
+		</a>
+	</div>
+
+	{* ── Seznamy akcí v záložkách ── *}
+	<div class="card border-0 shadow-sm">
+		<div class="card-header bg-white border-0 pt-3 px-4">
+			<ul class="nav nav-tabs card-header-tabs" id="adminEventsTabs">
+				<li class="nav-item">
+					<a class="nav-link {if $eventsTab === 'active'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, eventsTab => active">
+						<i class="bi bi-calendar-check me-1"></i> Plánované akce ({count($activeEvents)})
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $eventsTab === 'archived'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, eventsTab => archived">
+						<i class="bi bi-archive me-1"></i> Proběhlé akce ({count($archivedEvents)})
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="card-body p-4">
+			{* --- PLÁNOVANÉ AKCE --- *}
+			{if $eventsTab === 'active'}
+				{if $activeEvents}
+					{include eventTable, events => $activeEvents}
+				{else}
+					<div class="empty-state py-4">
+						<i class="bi bi-calendar-plus text-muted" style="font-size: 2.5rem;"></i>
+						<h5 class="mt-2">Žádné plánované akce</h5>
+						<p class="text-muted small">Aktuálně se neplánuje žádná nadcházející akce.</p>
+						<a n:href="create" class="btn btn-sm btn-primary mt-2">
+							<i class="bi bi-plus-lg"></i> Vytvořit novou akci
+						</a>
+					</div>
+				{/if}
+			{/if}
+
+			{* --- ARCHIVOVANÉ / PROBĚHLÉ AKCE --- *}
+			{if $eventsTab === 'archived'}
+				{if $archivedEvents}
+					{include eventTable, events => $archivedEvents}
+				{else}
+					<div class="empty-state py-4 text-center">
+						<i class="bi bi-archive text-muted" style="font-size: 2.5rem;"></i>
+						<h5 class="mt-2">Archiv je prázdný</h5>
+						<p class="text-muted small">Zatím neproběhla žádná akce.</p>
+					</div>
+				{/if}
+			{/if}
+		</div>
+	</div>
+</div>
+
+{* ── Reusable Table Definition ── *}
+{define eventTable}
+	<div class="table-responsive">
+		<table class="table table-hover align-middle mb-0">
+			<thead class="table-light">
+				<tr>
+					<th>Název</th>
+					<th>Místo</th>
+					<th>Datum</th>
+					<th class="text-center">Jízdy</th>
+					<th class="text-center">Volná místa</th>
+					<th class="text-center">Poptávky</th>
+					<th class="text-center">Stav</th>
+					<th class="text-end">Akce</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $events as $event}
+					{var $rideCount = $eventRepository->getRideCount($event->id)}
+					{var $seatCount = $eventRepository->getAvailableSeatsCount($event->id)}
+					{var $totalSeatCount = $eventRepository->getTotalSeatsCount($event->id)}
+					{var $reqCount = $eventRepository->getRequestCount($event->id)}
+					<tr>
+						<td>
+							<a n:href="detail $event->id" class="fw-bold text-decoration-none">
+								{$event->title}
+							</a>
+						</td>
+						<td class="text-muted">{$event->location}</td>
+						<td class="text-muted text-nowrap">
+							{$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+						</td>
+						<td class="text-center">
+							<span class="badge bg-primary">{$rideCount}</span>
+						</td>
+						<td class="text-center">
+							<span class="badge bg-{$seatCount > 0 ? 'success' : 'secondary'}">{$seatCount}/{$totalSeatCount}</span>
+						</td>
+						<td class="text-center">
+							{if $reqCount > 0}
+								<span class="badge bg-warning text-dark">{$reqCount}</span>
+							{else}
+								<span class="text-muted">0</span>
+							{/if}
+						</td>
+						<td class="text-center text-nowrap">
+							{if $event->date_to->format('Y-m-d') < $now->format('Y-m-d')}
+								<span class="badge bg-secondary">Už proběhlo</span>
+								{var $savedCo2 = $co2Service->getEventSavedCo2($event->id)}
+								<br><small class="{if $savedCo2 > 0}text-success{else}text-secondary{/if} fw-bold" title="Celkem ušetřeno CO₂ spolujízdou">
+									<i class="bi bi-tree-fill"></i> {$savedCo2} kg
+								</small>
+							{elseif $event->is_active}
+								<span class="badge bg-success">Aktivní</span>
+							{else}
+								<span class="badge bg-danger">Neaktivní</span>
+							{/if}
+						</td>
+						<td class="text-end text-nowrap">
+							<a n:href="Admin:detail $event->id" class="btn btn-sm btn-outline-primary" title="Detail">
+								<i class="bi bi-eye"></i>
+							</a>
+							<a n:href="edit $event->id" class="btn btn-sm btn-outline-secondary" title="Upravit">
+								<i class="bi bi-pencil"></i>
+							</a>
+							{if $event->date_to->format('Y-m-d') < $now->format('Y-m-d')}
+								<button class="btn btn-sm btn-outline-secondary" disabled title="Tuto akci nelze aktivovat/deaktivovat, protože již proběhla">
+									<i class="bi bi-dash-circle"></i>
+								</button>
+							{else}
+								<a n:href="toggleActive! $event->id" class="btn btn-sm btn-outline-warning" title="{$event->is_active ? 'Deaktivovat' : 'Aktivovat'}">
+									<i class="bi bi-{$event->is_active ? 'pause' : 'play'}"></i>
+								</a>
+							{/if}
+							<a n:href="delete! $event->id" class="btn btn-sm btn-outline-danger"
+							   onclick="return confirm('Opravdu smazat akci {$event->title}? Smažou se i všechny jízdy.')"
+							   title="Smazat">
+								<i class="bi bi-trash"></i>
+							</a>
+						</td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+{/define}
+{/block}

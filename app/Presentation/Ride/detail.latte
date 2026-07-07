@@ -1,0 +1,188 @@
+{block title}Jízda: {$ride->direction === 'back' ? $event->location : $ride->departure_city} → {$ride->direction === 'back' ? $ride->departure_city : $event->location}{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="mb-4">
+		<a n:href="Event:detail, id => $event->id, slug => ($event->title|webalize)" class="text-decoration-none text-muted">
+			<i class="bi bi-arrow-left"></i> Zpět na {$event->title}
+		</a>
+	</div>
+
+	{if $isPastRide}
+		<div class="alert alert-warning mb-4 d-flex align-items-center gap-2">
+			<i class="bi bi-exclamation-triangle-fill fs-5 text-warning"></i>
+			<div>Tato jízda již proběhla ({$ride->departure_time|date:'j. n. Y \v H:i'}). Již se k ní nelze přihlásit.</div>
+		</div>
+	{/if}
+
+	{var $isMine = isset($myRideTokens[$ride->id])}
+
+	{* Hlavní karta jízdy *}
+	<div class="card card-ride mb-4 {if $isMine}border-primary{/if}">
+		<div class="card-body p-4">
+			<div class="d-flex justify-content-between align-items-start mb-3">
+				<div>
+					{if $isMine}
+						<span class="badge bg-primary mb-2">Vaše nabídka</span>
+					{/if}
+					<h2 class="h4 fw-bold mb-1">
+						<i class="bi bi-person-fill text-primary"></i> {$ride->driver_name}
+					</h2>
+				</div>
+				{if $isPastRide}
+					<span class="badge bg-secondary badge-seats fs-6">
+						<i class="bi bi-clock-history"></i> Jízda již proběhla
+					</span>
+				{elseif $availableSeats > 0}
+					<span class="badge bg-success badge-seats fs-6">
+						<i class="bi bi-person-plus"></i> {$availableSeats} voln{$availableSeats === 1 ? 'é místo' : ($availableSeats >= 2 && $availableSeats <= 4 ? 'á místa' : 'ých míst')} z {$ride->total_seats}
+					</span>
+				{else}
+					<span class="badge bg-danger badge-seats fs-6">
+						<i class="bi bi-x-circle"></i> 0 míst z {$ride->total_seats}
+					</span>
+				{/if}
+			</div>
+
+			<div class="row g-3 mb-3">
+				<div class="col-md-6">
+					<div class="p-3 bg-light rounded">
+						<div class="fw-bold mb-1">
+							<i class="bi bi-geo-alt text-primary"></i> Trasa
+						</div>
+						<div>
+							{if $ride->direction === 'back'}
+								<strong>{$event->location}</strong>
+								{if $ride->route_via}
+									<div class="my-1 text-muted small"><i class="bi bi-geo-alt-fill text-muted"></i> přes: {$ride->route_via}</div>
+								{else}
+									<div class="my-1 text-primary">↓</div>
+								{/if}
+								<strong>{$ride->departure_city}</strong>
+								{if $ride->departure_place}
+									<br><small class="text-muted">({$ride->departure_place})</small>
+								{/if}
+							{else}
+								<strong>{$ride->departure_city}</strong>
+								{if $ride->departure_place}
+									<br><small class="text-muted">({$ride->departure_place})</small>
+								{/if}
+								{if $ride->route_via}
+									<div class="my-1 text-muted small"><i class="bi bi-geo-alt-fill text-muted"></i> přes: {$ride->route_via}</div>
+								{else}
+									<div class="my-1 text-primary">↓</div>
+								{/if}
+								<strong>{$event->location}</strong>
+							{/if}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="p-3 bg-light rounded">
+						<div class="fw-bold mb-1">
+							<i class="bi bi-clock text-primary"></i> Odjezd
+						</div>
+						<div class="fs-5">{$ride->departure_time|date:'j. n. Y'}</div>
+						<div class="fs-4 fw-bold text-primary">{$ride->departure_time|date:'H:i'}</div>
+					</div>
+				</div>
+			</div>
+
+			{if $ride->note}
+				<div class="p-3 bg-light rounded mb-3">
+					<div class="fw-bold mb-1">
+						<i class="bi bi-chat-text text-muted"></i> Poznámka
+					</div>
+					<div>{$ride->note|breakLines}</div>
+				</div>
+			{/if}
+
+			{if $passengerCount > 0}
+				<div class="p-3 rounded mb-3" style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #a7f3d0;">
+					<div class="d-flex align-items-center gap-2">
+						<i class="bi bi-leaf text-success fs-5"></i>
+						<div>
+							<span class="fw-bold text-success">{$savedCo2|number:1, ',', ' '} kg CO₂</span>
+							<span class="text-muted">ušetřeno díky této jízdě</span>
+							{if $ride->distance_km}
+								<br><small class="text-muted">({$ride->distance_km} km × {$passengerCount} spolujezd{$passengerCount === 1 ? 'ec' : ($passengerCount >= 2 && $passengerCount <= 4 ? 'ci' : 'ců')})</small>
+							{else}
+								<br><small class="text-muted">(odhad – řidič nezadal vzdálenost)</small>
+							{/if}
+						</div>
+					</div>
+				</div>
+			{/if}
+
+			<div class="d-flex flex-wrap gap-2">
+				{if $availableSeats > 0 && !$isPastRide}
+					<a n:href="join $ride->id" class="btn btn-primary">
+						<i class="bi bi-person-plus"></i> Přihlásit se jako spolujezdec
+					</a>
+				{/if}
+				{if $isMine || $user->isLoggedIn()}
+					<a n:href="edit $ride->id" class="btn btn-outline-secondary">
+						<i class="bi bi-pencil"></i> Upravit
+					</a>
+					<a n:href="deleteRide! $ride->id" class="btn btn-outline-danger"
+					   onclick="return confirm('Opravdu smazat tuto jízdu?')">
+						<i class="bi bi-trash"></i> Smazat
+					</a>
+				{/if}
+			</div>
+		</div>
+	</div>
+
+	{* Seznam spolujezdců *}
+	{var $hasPassengerToken = false}
+	{foreach $passengers as $p}
+		{if isset($myPassengerTokens[$p->id])}
+			{var $hasPassengerToken = true}
+			{breakIf true}
+		{/if}
+	{/foreach}
+
+	{if $isMine || $user->isLoggedIn() || $hasPassengerToken}
+		<div class="card mb-4">
+			<div class="card-header bg-white">
+				<h3 class="h5 fw-bold mb-0">
+					<i class="bi bi-people text-primary"></i> Spolujezdci ({$passengerCount}/{$ride->total_seats})
+				</h3>
+			</div>
+			<div class="card-body">
+				{if $passengers}
+					<div class="list-group list-group-flush">
+						{foreach $passengers as $passenger}
+							{var $isMyPass = isset($myPassengerTokens[$passenger->id])}
+							<div class="list-group-item d-flex justify-content-between align-items-center px-0 {if $isMyPass}bg-light{/if}">
+								<div>
+									{if $isMyPass}
+										<span class="badge bg-primary me-1">Vy</span>
+									{/if}
+									{if $isMine || $user->isLoggedIn() || $isMyPass}
+										<strong>{$passenger->name}</strong>
+									{else}
+										<span class="text-muted"><i class="bi bi-person-fill"></i> Spolujezdec</span>
+									{/if}
+								</div>
+								{if $isMyPass || $user->isLoggedIn()}
+									<a n:href="cancelPassenger! $passenger->id" class="btn btn-sm btn-outline-danger"
+									   onclick="return confirm('Opravdu zrušit přihlášení?')">
+										<i class="bi bi-x-lg"></i>
+									</a>
+								{/if}
+							</div>
+						{/foreach}
+					</div>
+				{else}
+					<div class="text-center text-muted py-3">
+						<i class="bi bi-person-plus"></i>
+						<p class="mb-0">Zatím žádní spolujezdci.</p>
+					</div>
+				{/if}
+			</div>
+		</div>
+	{/if}
+
+</div>
+{/block}

@@ -1,0 +1,74 @@
+{block title}Přihlásit se k jízdě{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-md-8 col-lg-6">
+			<div class="mb-4">
+				<a n:href="detail $ride->id" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na detail jízdy
+				</a>
+			</div>
+
+			<div class="card shadow-sm">
+				<div class="card-body p-4">
+					<h1 class="h4 fw-bold mb-2">
+						<i class="bi bi-person-plus-fill text-primary"></i> Přihlásit se k jízdě
+					</h1>
+					<p class="text-muted mb-4">
+						{if $ride->direction === 'back'}
+							<span class="badge bg-info mb-2 text-dark"><i class="bi bi-arrow-left"></i> Zpět z akce</span><br>
+							<i class="bi bi-geo-alt"></i> Z: <strong>{$event->location}</strong>
+						{else}
+							<span class="badge bg-primary mb-2 text-white"><i class="bi bi-arrow-right"></i> Tam na akci</span><br>
+							<i class="bi bi-geo-alt"></i> Cíl: <strong>{$event->location}</strong>
+						{/if}
+						<span class="mx-1">·</span>
+						<i class="bi bi-calendar3"></i> {$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+					</p>
+
+					<div class="p-3 bg-light rounded border-start border-primary border-4 mb-4">
+						<div class="row align-items-center">
+							<div class="col">
+								<div class="fw-bold text-dark">
+									<i class="bi bi-person-circle text-primary"></i> Řidič: {$ride->driver_name}
+								</div>
+								<div class="small text-muted mt-1">
+									<i class="bi bi-map"></i> Trasa:
+									{if $ride->direction === 'back'}
+										<strong>{$event->location}</strong>
+										{if $ride->route_via} <span class="text-muted">(přes {$ride->route_via})</span>{/if}
+										→ <strong>{$ride->departure_city}</strong>
+										{if $ride->departure_place} <small class="text-muted">({$ride->departure_place})</small>{/if}
+									{else}
+										<strong>{$ride->departure_city}</strong>
+										{if $ride->departure_place} <small class="text-muted">({$ride->departure_place})</small>{/if}
+										{if $ride->route_via} <span class="text-muted">(přes {$ride->route_via})</span>{/if}
+										→ <strong>{$event->location}</strong>
+									{/if}
+								</div>
+								<div class="small text-muted mt-1">
+									<i class="bi bi-clock"></i> Odjezd: <strong>{$ride->departure_time|date:'j. n. Y H:i'}</strong>
+								</div>
+							</div>
+							<div class="col-auto text-end">
+								<span class="badge bg-success fs-6">
+									<i class="bi bi-person-plus"></i> {$availableSeats} voln{$availableSeats === 1 ? 'é místo' : ($availableSeats >= 2 && $availableSeats <= 4 ? 'á místa' : 'ých míst')} z {$ride->total_seats}
+								</span>
+							</div>
+						</div>
+					</div>
+
+					{control joinRideForm}
+
+					<div class="mt-4 pt-3 border-top text-muted small">
+						<i class="bi bi-shield-check text-primary"></i>
+						Odesláním formuláře berete na vědomí zpracování osobních údajů (jméno, e-mail, telefon) za účelem koordinace spolujízdy a sdílení kontaktů s řidičem.
+						Více informací naleznete v <a n:href="Home:gdpr" target="_blank" class="text-decoration-underline text-secondary">Zásadách ochrany osobních údajů (GDPR)</a>.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

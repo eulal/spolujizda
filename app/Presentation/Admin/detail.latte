@@ -1,0 +1,200 @@
+{block title}Admin: {$event->title}{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="mb-4">
+		<a n:href="events" class="text-decoration-none text-muted">
+			<i class="bi bi-arrow-left"></i> Zpět na seznam akcí
+		</a>
+	</div>
+
+	<div class="d-flex justify-content-between align-items-start mb-4">
+		<div>
+			<h1 class="h3 fw-bold d-inline-flex align-items-center gap-2">
+				{$event->title}
+				{if $event->date_to->format('Y-m-d') < $now->format('Y-m-d')}
+					<span class="badge bg-secondary fs-6">Proběhlo</span>
+				{elseif $event->is_active}
+					<span class="badge bg-success fs-6">Aktivní</span>
+				{else}
+					<span class="badge bg-danger fs-6">Pozastaveno</span>
+				{/if}
+			</h1>
+			<p class="text-muted mb-0">
+				<i class="bi bi-geo-alt"></i> {$event->location} ·
+				<i class="bi bi-calendar3"></i> {$event->date_from|date:'j. n. Y'} – {$event->date_to|date:'j. n. Y'}
+			</p>
+		</div>
+		<div class="d-flex gap-2">
+			<a n:href="Event:detail, id => $event->id, slug => ($event->title|webalize)" class="btn btn-outline-primary btn-sm">
+				<i class="bi bi-eye"></i> Veřejný náhled
+			</a>
+			<a n:href="edit $event->id" class="btn btn-outline-secondary btn-sm">
+				<i class="bi bi-pencil"></i> Upravit
+			</a>
+			{if $event->date_to->format('Y-m-d') < $now->format('Y-m-d')}
+				<button class="btn btn-sm btn-outline-secondary" disabled title="Tuto akci nelze aktivovat/deaktivovat, protože již proběhla">
+					<i class="bi bi-dash-circle"></i> Proběhlo
+				</button>
+			{else}
+				<a n:href="toggleActive! $event->id" class="btn btn-sm btn-outline-warning" title="{$event->is_active ? 'Deaktivovat akci' : 'Aktivovat akci'}">
+					<i class="bi bi-{$event->is_active ? 'pause' : 'play'}"></i> {$event->is_active ? 'Pozastavit' : 'Aktivovat'}
+				</a>
+			{/if}
+		</div>
+	</div>
+
+	{if $event->description}
+		<p class="text-muted">{$event->description|breakLines}</p>
+	{/if}
+
+	{* ── Karty detailu (Tabs) ── *}
+	<div class="card border-0 shadow-sm mt-4">
+		<div class="card-header bg-white border-0 pt-3 px-4">
+			<ul class="nav nav-tabs card-header-tabs" id="detailTabs">
+				<li class="nav-item">
+					<a class="nav-link {if $detailTab === 'there'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, detailTab => there">
+						<i class="bi bi-arrow-right-circle-fill me-1"></i> Cesty tam ({$rideCountThere})
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $detailTab === 'back'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, detailTab => back">
+						<i class="bi bi-arrow-left-circle-fill me-1"></i> Cesty zpět ({$rideCountBack})
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $detailTab === 'requests'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, detailTab => requests">
+						<i class="bi bi-hand-index-fill me-1"></i> Poptávky ({$requestCount})
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="card-body p-4">
+			{* --- TABS CONTENT --- *}
+			{if $detailTab === 'there'}
+				{if $ridesThere}
+					{include rideTable, rides => $ridesThere}
+				{else}
+					<div class="empty-state py-4 text-center">
+						<i class="bi bi-car-front text-muted" style="font-size: 2.5rem;"></i>
+						<h5 class="mt-2">Žádné nabídky jízd tam</h5>
+						<p class="text-muted small">Aktuálně nikdo nenabízí spolujízdu směrem na akci.</p>
+					</div>
+				{/if}
+			{/if}
+
+			{if $detailTab === 'back'}
+				{if $ridesBack}
+					{include rideTable, rides => $ridesBack}
+				{else}
+					<div class="empty-state py-4 text-center">
+						<i class="bi bi-car-front text-muted" style="font-size: 2.5rem;"></i>
+						<h5 class="mt-2">Žádné nabídky jízd zpět</h5>
+						<p class="text-muted small">Aktuálně nikdo nenabízí spolujízdu zpět z akce.</p>
+					</div>
+				{/if}
+			{/if}
+
+			{if $detailTab === 'requests'}
+				{if $requests}
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0">
+							<thead class="table-light">
+								<tr>
+									<th>Poptávající (e-mail)</th>
+									<th>Směr</th>
+									<th>Vytvořeno</th>
+									<th class="text-end">Akce</th>
+								</tr>
+							</thead>
+							<tbody>
+								{foreach $requests as $request}
+									<tr>
+										<td>
+											{if $request->email}
+												<i class="bi bi-envelope text-muted"></i> <a href="mailto:{$request->email}">{$request->email}</a>
+											{/if}
+											{if $request->phone}
+												{if $request->email}<br>{/if}
+												<i class="bi bi-telephone text-muted"></i> {$request->phone}
+											{/if}
+										</td>
+										<td>
+											{if $request->direction === 'there'}
+												<span class="badge bg-primary">Tam →</span>
+											{else}
+												<span class="badge bg-info">← Zpět</span>
+											{/if}
+										</td>
+										<td class="text-muted small">{$request->created_at|date:'j. n. Y H:i'}</td>
+										<td class="text-end text-nowrap">
+											<a n:href="deleteRequest! $request->id" class="btn btn-sm btn-outline-danger" 
+											   onclick="return confirm('Opravdu smazat poptávku?')" 
+											   title="Smazat poptávku">
+												<i class="bi bi-trash"></i>
+											</a>
+										</td>
+									</tr>
+								{/foreach}
+							</tbody>
+						</table>
+					</div>
+				{else}
+					<div class="empty-state py-4 text-center">
+						<i class="bi bi-hand-index text-muted" style="font-size: 2.5rem;"></i>
+						<h5 class="mt-2">Žádné poptávky</h5>
+						<p class="text-muted small">Aktuálně nikdo neshání svezení na tuto akci.</p>
+					</div>
+				{/if}
+			{/if}
+		</div>
+	</div>
+</div>
+
+{* ── Reusable Table Definition for Rides ── *}
+{define rideTable}
+	<div class="table-responsive">
+		<table class="table table-hover align-middle mb-0">
+			<thead class="table-light">
+				<tr>
+					<th>Řidič</th>
+					<th>E-mail</th>
+					<th>Trasa</th>
+					<th>Kdy</th>
+					<th class="text-center">Místa</th>
+					<th class="text-end">Akce</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $rides as $ride}
+					{var $passengerCount = $rideRepository->getPassengerCount($ride->id)}
+					{var $available = $ride->total_seats - $passengerCount}
+					<tr>
+						<td class="fw-bold">{$ride->driver_name}</td>
+						<td class="text-muted">{$ride->driver_email}</td>
+						<td>
+							{if $ride->direction === 'back'}
+								<small class="text-muted">{$event->location}</small> → <strong>{$ride->departure_city}</strong>
+							{else}
+								<strong>{$ride->departure_city}</strong> → <small class="text-muted">{$event->location}</small>
+							{/if}
+							{if $ride->route_via}
+								<br><small class="text-muted"><i class="bi bi-geo-alt"></i> přes: {$ride->route_via}</small>
+							{/if}
+						</td>
+						<td class="text-nowrap">{$ride->departure_time|date:'j. n. H:i'}</td>
+						<td class="text-center">
+							<span class="badge bg-{$available > 0 ? 'success' : 'danger'}">{$available}/{$ride->total_seats}</span>
+						</td>
+						<td class="text-end">
+							<a n:href="Ride:detail $ride->id" class="btn btn-sm btn-outline-primary" title="Detail jízdy">
+								<i class="bi bi-eye"></i> Detail
+							</a>
+						</td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+{/define}
+{/block}

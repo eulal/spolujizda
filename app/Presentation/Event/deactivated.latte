@@ -1,0 +1,28 @@
+{block title}Akce byla deaktivována{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="mb-4">
+		<a n:href="Home:default" class="text-decoration-none text-muted">
+			<i class="bi bi-arrow-left"></i> Zpět na přehled akcí
+		</a>
+	</div>
+
+	<div class="row justify-content-center">
+		<div class="col-md-8 text-center py-5">
+			<div class="mb-4">
+				<i class="bi bi-calendar-x-fill text-danger" style="font-size: 5rem;"></i>
+			</div>
+			<h1 class="fw-bold mb-3">Akce byla deaktivována</h1>
+			<p class="lead text-muted mb-4">
+				Tato akce (<strong>{$event->title}</strong>) byla administrátorem deaktivována. Nabídky spolujízdy a poptávky svezení k této akci již nejsou dostupné.
+			</p>
+			<div>
+				<a n:href="Home:default" class="btn btn-primary px-4 py-2">
+					<i class="bi bi-house-door-fill me-1"></i> Hlavní strana
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

@@ -1,0 +1,322 @@
+{block title}Nastavení systému{/block}
+
+{block content}
+<div class="container py-5">
+	{* ── Administrační navigace ── *}
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body p-2 d-flex align-items-center flex-wrap gap-2">
+					<a n:href="Admin:default" class="btn btn-sm btn-light">
+						<i class="bi bi-speedometer2 me-1"></i> Nástěnka
+					</a>
+					<a n:href="Admin:events" class="btn btn-sm btn-light">
+						<i class="bi bi-calendar-event me-1"></i> Správa akcí
+					</a>
+					<a n:href="Admin:settings" class="btn btn-sm btn-primary">
+						<i class="bi bi-sliders me-1"></i> Nastavení
+					</a>
+					<a n:href="Admin:update" class="btn btn-sm btn-light">
+						<i class="bi bi-arrow-repeat me-1"></i> Aktualizace
+						{if !empty($updateAvailable)}
+							<span class="badge bg-danger ms-1">Nová verze</span>
+						{/if}
+						{if !empty($pendingMigrationsCount)}
+							<span class="badge bg-warning text-dark ms-1">{$pendingMigrationsCount}</span>
+						{/if}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-4">
+		<h1 class="h3 fw-bold">
+			<i class="bi bi-sliders text-primary flex-wrap me-2"></i> Nastavení systému
+		</h1>
+	</div>
+
+	{* ── Karty nastavení (Tabs) ── *}
+	<div class="card border-0 shadow-sm">
+		<div class="card-header bg-white border-0 pt-3 px-4">
+			<ul class="nav nav-tabs card-header-tabs" id="settingsTabs" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link {if $tab === 'application'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, tab => application">
+						<i class="bi bi-gear-fill me-1"></i> Aplikace
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $tab === 'emails'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, tab => emails">
+						<i class="bi bi-envelope-fill me-1"></i> E-maily a SMTP
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $tab === 'password'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, tab => password">
+						<i class="bi bi-key-fill me-1"></i> Změna hesla
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $tab === 'gdpr'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, tab => gdpr">
+						<i class="bi bi-shield-check me-1"></i> GDPR / Soukromí
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="card-body p-4">
+			{* --- TAB 1: NASTAVENÍ APLIKACE --- *}
+			{if $tab === 'application'}
+				<h5 class="fw-bold mb-4">
+					<i class="bi bi-gear text-primary me-2"></i> Konfigurace aplikace
+				</h5>
+				<form n:name="applicationSettingsForm">
+					<div class="alert alert-danger mb-3" n:if="$form->hasErrors()">
+						<ul class="mb-0 ps-3">
+							<li n:foreach="$form->errors as $error">{$error}</li>
+						</ul>
+					</div>
+					<div class="row g-3">
+						<div class="col-md-12">
+							<label n:name="baseUrl" class="form-label fw-semibold">Base URL aplikace:</label>
+							<input n:name="baseUrl" class="form-control">
+							<div class="form-text">Absolutní URL adresa (např. <code>https://spolujizda.cz</code>), která se používá pro generování odkazů v e-mailech.</div>
+						</div>
+
+						<div class="col-md-6">
+							<label n:name="githubRepo" class="form-label fw-semibold">GitHub repozitář:</label>
+							<input n:name="githubRepo" class="form-control">
+							<div class="form-text">Cesta k repozitáři pro kontrolu aktualizací (např. <code>owner/repo</code>).</div>
+						</div>
+
+						<div class="col-md-6">
+							<label n:name="githubToken" class="form-label fw-semibold">GitHub token (PAT):</label>
+							<input n:name="githubToken" class="form-control">
+							<div class="form-text">
+								{if $hasGithubToken}
+									<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Token je nastaven.</span>
+									Zadejte nový pro přepsání.
+								{else}
+									<span class="text-muted">Volitelné – pouze pro privátní repozitáře.</span>
+								{/if}
+							</div>
+							{if $hasGithubToken}
+								<div class="form-check mt-2">
+									<input n:name="removeGithubToken" class="form-check-input" type="checkbox" id="removeTokenCheck">
+									<label n:name="removeGithubToken" class="form-check-label text-danger small" for="removeTokenCheck">Odebrat token (přepnout na veřejný repozitář)</label>
+								</div>
+							{/if}
+						</div>
+
+						<div class="col-md-6">
+							<label n:name="co2EmissionFactor" class="form-label fw-semibold">CO₂ emisní faktor (kg CO₂ / km):</label>
+							<input n:name="co2EmissionFactor" class="form-control">
+							<div class="form-text">Průměrné emise na jeden kilometr jízdy autem.</div>
+						</div>
+
+						<div class="col-12 mt-4 text-end">
+							<button n:name="submit" class="btn btn-primary fw-bold px-4">
+								<i class="bi bi-check-circle me-1"></i> Uložit nastavení aplikace
+							</button>
+						</div>
+					</div>
+				</form>
+			{/if}
+
+			{* --- TAB 2: EMAILY A SMTP --- *}
+			{if $tab === 'emails'}
+				<div class="row g-4">
+					<div class="col-lg-8 border-end">
+						<h5 class="fw-bold mb-4">
+							<i class="bi bi-envelope text-primary me-2"></i> Konfigurace SMTP
+						</h5>
+						<form n:name="emailSettingsForm">
+							<div class="alert alert-danger mb-3" n:if="$form->hasErrors()">
+								<ul class="mb-0 ps-3">
+									<li n:foreach="$form->errors as $error">{$error}</li>
+								</ul>
+							</div>
+							<div class="row g-3">
+								<div class="col-md-6">
+									<label n:name="mailFromName" class="form-label fw-semibold">Název odesílatele e-mailů:</label>
+									<input n:name="mailFromName" class="form-control">
+								</div>
+
+								<div class="col-md-6">
+									<label n:name="mailFrom" class="form-label fw-semibold">E-mail odesílatele:</label>
+									<input n:name="mailFrom" class="form-control">
+								</div>
+
+								<div class="col-md-12 mb-2">
+									<div class="form-check form-switch">
+										<input n:name="smtp" class="form-check-input" type="checkbox" id="smtpSwitch">
+										<label n:name="smtp" class="form-check-label fw-semibold" for="smtpSwitch">Použít vlastní SMTP server pro odesílání e-mailů</label>
+									</div>
+									<div class="form-text">Pokud je vypnuto, použije se výchozí PHP mailer systému.</div>
+								</div>
+
+								<div id="smtpSettingsBlock" class="row g-3 ms-1 border-start ps-3 py-2 {if !$form['smtp']->value}d-none{/if}">
+									<div class="col-md-8">
+										<label n:name="smtpHost" class="form-label fw-semibold">SMTP server (host):</label>
+										<input n:name="smtpHost" class="form-control" placeholder="např. smtp.gmail.com">
+									</div>
+
+									<div class="col-md-4">
+										<label n:name="smtpPort" class="form-label fw-semibold">SMTP port:</label>
+										<input n:name="smtpPort" class="form-control" placeholder="např. 587 nebo 465">
+									</div>
+
+									<div class="col-md-6">
+										<label n:name="smtpUsername" class="form-label fw-semibold">SMTP uživatelské jméno:</label>
+										<input n:name="smtpUsername" class="form-control" placeholder="např. spolujizda@example.com">
+									</div>
+
+									<div class="col-md-6">
+										<label n:name="smtpPassword" class="form-label fw-semibold">SMTP heslo:</label>
+										<input n:name="smtpPassword" class="form-control">
+									</div>
+
+									<div class="col-md-6">
+										<label n:name="smtpSecure" class="form-label fw-semibold">Zabezpečení SMTP:</label>
+										<select n:name="smtpSecure" class="form-select"></select>
+									</div>
+								</div>
+
+								<div class="col-12 mt-4 text-end">
+									<button n:name="submit" class="btn btn-primary fw-bold px-4">
+										<i class="bi bi-check-circle me-1"></i> Uložit nastavení e-mailů
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="col-lg-4">
+						<h5 class="fw-bold mb-4">
+							<i class="bi bi-envelope-check text-primary me-2"></i> Odeslat testovací e-mail
+						</h5>
+						<p class="text-muted small">
+							Po uložení SMTP konfigurace vlevo můžete odesláním zkušební zprávy ihned ověřit, zda je připojení k SMTP serveru funkční.
+						</p>
+						
+						<form n:name="testMailForm" class="row g-2 mt-2">
+							<div class="col-12" n:if="$form->hasErrors()">
+								<div class="alert alert-danger mb-2">
+									<ul class="mb-0 ps-3">
+										<li n:foreach="$form->errors as $error">{$error}</li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-12 mb-2">
+								<div class="input-group">
+									<span class="input-group-text bg-light border-end-0">
+										<i class="bi bi-envelope text-muted"></i>
+									</span>
+									<input n:name="recipient" class="form-control border-start-0 ps-1" placeholder="např. jan.novak@example.com">
+								</div>
+							</div>
+							<div class="col-12">
+								<button n:name="submit" class="btn btn-outline-primary w-100 fw-bold">
+									Odeslat test
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{/if}
+
+			{* --- TAB 3: ZMĚNA HESLA --- *}
+			{if $tab === 'password'}
+				<div class="row justify-content-center">
+					<div class="col-md-6 col-lg-5">
+						<h5 class="fw-bold mb-4">
+							<i class="bi bi-key text-primary me-2"></i> Změna hesla administrátora
+						</h5>
+						<form n:name="changePasswordForm">
+							<div class="alert alert-danger mb-3" n:if="$form->hasErrors()">
+								<ul class="mb-0 ps-3">
+									<li n:foreach="$form->errors as $error">{$error}</li>
+								</ul>
+							</div>
+							<div class="mb-3">
+								<label n:name="currentPassword" class="form-label fw-semibold">Aktuální heslo:</label>
+								<input n:name="currentPassword" class="form-control">
+							</div>
+
+							<div class="mb-3">
+								<label n:name="newPassword" class="form-label fw-semibold">Nové heslo:</label>
+								<input n:name="newPassword" class="form-control">
+							</div>
+
+							<div class="mb-3">
+								<label n:name="newPasswordConfirm" class="form-label fw-semibold">Potvrzení nového hesla:</label>
+								<input n:name="newPasswordConfirm" class="form-control">
+							</div>
+
+							<div class="d-grid mt-4">
+								<button n:name="submit" class="btn btn-warning fw-bold text-white">
+									<i class="bi bi-key me-1"></i> Změnit heslo
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			{/if}
+
+			{* --- TAB 4: GDPR --- *}
+			{if $tab === 'gdpr'}
+				<h5 class="fw-bold mb-4">
+					<i class="bi bi-shield-check text-primary me-2"></i> GDPR a ochrana osobních údajů
+				</h5>
+				<form n:name="gdprSettingsForm">
+					<div class="alert alert-danger mb-3" n:if="$form->hasErrors()">
+						<ul class="mb-0 ps-3">
+							<li n:foreach="$form->errors as $error">{$error}</li>
+						</ul>
+					</div>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<label n:name="gdprAuthor" class="form-label fw-semibold">Správce osobních údajů (organizace):</label>
+							<input n:name="gdprAuthor" class="form-control">
+							<div class="form-text">Název subjektu provozujícího aplikaci. Pokud nevyplníte, použije se <em>{$mailFromName}</em>.</div>
+						</div>
+
+						<div class="col-md-6">
+							<label n:name="gdprEmail" class="form-label fw-semibold">E-mail pro dotazy k GDPR:</label>
+							<input n:name="gdprEmail" class="form-control">
+							<div class="form-text">Kontakt pro uživatele. Pokud nevyplníte, použije se <em>{$mailFrom}</em>.</div>
+						</div>
+
+						<div class="col-md-12">
+							<label n:name="gdprText" class="form-label fw-semibold">Vlastní text ochrany osobních údajů (volitelně):</label>
+							<textarea n:name="gdprText" class="form-control" rows="8"></textarea>
+							<div class="form-text">Ponechte prázdné pro použití výchozího textu. Podporuje HTML tagy (např. <code>&lt;p&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code>, <code>&lt;strong&gt;</code> atd.).</div>
+						</div>
+
+						<div class="col-12 mt-4 text-end">
+							<button n:name="submit" class="btn btn-primary fw-bold px-4">
+								<i class="bi bi-check-circle me-1"></i> Uložit nastavení GDPR
+							</button>
+						</div>
+					</div>
+				</form>
+			{/if}
+		</div>
+	</div>
+</div>
+
+<script>
+	// Toggle SMTP block visibility
+	document.addEventListener('DOMContentLoaded', () => {
+		const smtpSwitch = document.getElementById('smtpSwitch');
+		const smtpBlock = document.getElementById('smtpSettingsBlock');
+
+		if (smtpSwitch && smtpBlock) {
+			smtpSwitch.addEventListener('change', () => {
+				if (smtpSwitch.checked) {
+					smtpBlock.classList.remove('d-none');
+				} else {
+					smtpBlock.classList.add('d-none');
+				}
+			});
+		}
+	});
+</script>
+{/block}

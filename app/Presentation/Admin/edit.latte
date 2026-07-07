@@ -1,0 +1,25 @@
+{block title}Upravit: {$event->title}{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-md-8 col-lg-6">
+			<div class="mb-4">
+				<a n:href="detail $event->id" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na detail
+				</a>
+			</div>
+
+			<div class="card shadow-sm">
+				<div class="card-body p-4">
+					<h1 class="h4 fw-bold mb-4">
+						<i class="bi bi-pencil text-primary"></i> Upravit akci
+					</h1>
+
+					{control editEventForm}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

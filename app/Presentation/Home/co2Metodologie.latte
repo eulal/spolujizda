@@ -1,0 +1,117 @@
+{block title}Jak počítáme ušetřené CO₂ – Metodologie{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-8">
+			<div class="mb-4">
+				<a n:href="Home:default" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na hlavní stránku
+				</a>
+			</div>
+
+			<div class="card shadow-sm mb-4">
+				<div class="card-body p-4 p-md-5">
+					<div class="text-center mb-4">
+						<i class="bi bi-leaf text-success" style="font-size: 3rem;"></i>
+						<h1 class="h3 fw-bold mt-2">Jak počítáme ušetřené emise CO₂</h1>
+						<p class="text-muted">Metodologie výpočtu ekologického přínosu spolujízdy</p>
+					</div>
+
+					<hr class="my-4">
+
+					<h2 class="h5 fw-bold mb-3">
+						<i class="bi bi-lightbulb text-warning"></i> Základní princip
+					</h2>
+					<p>
+						Každý spolujezdec, který sdílí jízdu s řidičem, by jinak s velkou pravděpodobností
+						jel <strong>vlastním autem</strong>. Tím, že se sveze s někým jiným, ušetří emise
+						z jedné celé cesty autem.
+					</p>
+
+					<div class="p-3 bg-light rounded mb-4">
+						<code class="text-dark">
+							ušetřené CO₂ = počet spolujezdců × vzdálenost (km) × emisní faktor (kg/km)
+						</code>
+					</div>
+
+					<h2 class="h5 fw-bold mb-3">
+						<i class="bi bi-speedometer"></i> Emisní faktor
+					</h2>
+					<p>
+						Používáme emisní faktor <strong>{$emissionFactor * 1000|number:0} g CO₂/km</strong>
+						(= {$emissionFactor|number:3} kg/km), což odpovídá průměrným emisím osobního automobilu
+						v České republice. Tato hodnota vychází z dat
+						<a href="https://www.eea.europa.eu/" target="_blank" rel="noopener">Evropské agentury pro životní prostředí (EEA)</a>
+						a zahrnuje průměrnou flotilu vozidel v ČR (mix benzínových, naftových i novějších vozů).
+					</p>
+
+					<h2 class="h5 fw-bold mb-3">
+						<i class="bi bi-signpost-2"></i> Vzdálenost
+					</h2>
+					<p>
+						Vzdálenost zadává <strong>řidič</strong> při vytváření nabídky jízdy jako přibližný
+						jednosměrný odhad v kilometrech. Pokud řidič vzdálenost nevyplní, používáme
+						výchozí odhad <strong>{$defaultDistanceKm} km</strong>.
+					</p>
+
+					<h2 class="h5 fw-bold mb-3">
+						<i class="bi bi-calculator"></i> Příklad výpočtu
+					</h2>
+					<div class="p-3 bg-light rounded mb-4">
+						<p class="mb-1">Řidič jede z Prahy do Horní Plané (<strong>200 km</strong>).</p>
+						<p class="mb-1">Sveze s sebou <strong>3 spolujezdce</strong>.</p>
+						<p class="mb-0">
+							→ Ušetřeno: 3 × 200 × {$emissionFactor|number:3} =
+							<strong>{(3 * 200 * $emissionFactor)|number:1, ',', ' '} kg CO₂</strong>
+						</p>
+					</div>
+
+					<h2 class="h5 fw-bold mb-3">
+						<i class="bi bi-exclamation-triangle text-warning"></i> Co výpočet nezahrnuje
+					</h2>
+					<ul class="text-muted">
+						<li>Nezapočítává mírně vyšší spotřebu auta kvůli přítěžení spolujezdci (zanedbatelný vliv).</li>
+						<li>Předpokládá, že by spolujezdci jinak cestovali vlastním autem – ne veřejnou dopravou.</li>
+						<li>Nerozlišuje typ vozidla (elektromobil, hybrid, benzín, nafta).</li>
+						<li>Jde o <strong>konzervativní odhad</strong> – skutečná úspora může být vyšší.</li>
+					</ul>
+					<p class="text-muted small">
+						Tato zjednodušení jsou standardní v podobných kalkulačkách spolujízdy (BlaBlaCar, GoOpti aj.).
+					</p>
+
+					<hr class="my-4">
+
+					{if $totalSavedCo2 > 0}
+						<div class="text-center">
+							<h2 class="h5 fw-bold mb-3">
+								<i class="bi bi-trophy text-warning"></i> Naše celkové výsledky
+							</h2>
+							<div class="row g-3">
+								<div class="col-md-4">
+									<div class="p-3 rounded" style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);">
+										<div class="fs-3 fw-bold text-success">{$totalSavedCo2|number:1, ',', ' '}</div>
+										<div class="text-muted small">kg CO₂ ušetřeno</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="p-3 rounded" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+										<div class="fs-3 fw-bold text-primary">{$totalPassengers}</div>
+										<div class="text-muted small">spolujezdců celkem</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="p-3 rounded" style="background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);">
+										<div class="fs-3 fw-bold" style="color: #ca8a04;">{$sharedRideCount}</div>
+										<div class="text-muted small">sdílených jízd</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

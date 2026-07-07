@@ -1,0 +1,117 @@
+{block title}Ochrana osobních údajů (GDPR){/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-8">
+			<div class="mb-4">
+				<a n:href="Home:default" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na hlavní stránku
+				</a>
+			</div>
+
+			<div class="card shadow-sm mb-4">
+				<div class="card-body p-4 p-md-5">
+					<div class="text-center mb-4">
+						<i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+						<h1 class="h3 fw-bold mt-2">Ochrana osobních údajů</h1>
+						<p class="text-muted">Informace o zpracování osobních údajů (GDPR)</p>
+					</div>
+
+					<hr class="my-4">
+
+					{if !empty($gdprText)}
+						<div class="gdpr-content">
+							{$gdprText|noescape}
+						</div>
+					{else}
+						<div class="gdpr-content">
+							<p>
+								Vážení uživatelé, ochrana vašeho soukromí a osobních údajů je pro nás prioritou. 
+								Níže naleznete informace o tom, jaké údaje zpracováváme, za jakým účelem, 
+								po jakou dobu a jaká jsou vaše práva.
+							</p>
+
+							<p class="text-muted small">
+								Provozovatelem této aplikace a správcem osobních údajů je <strong>{$gdprAuthor}</strong>{if !empty($gdprEmail)} (kontakt: <a href="mailto:{$gdprEmail}">{$gdprEmail}</a>){/if}.
+							</p>
+
+							<h2 class="h5 fw-bold mb-3 mt-4">
+								<i class="bi bi-database"></i> 1. Jaké údaje zpracováváme?
+							</h2>
+							<p>Zpracováváme pouze údaje nezbytné pro koordinaci spolujízdy na akce:</p>
+							<ul>
+								<li class="mb-2">
+									<strong>Řidiči (nabídka jízdy):</strong> Jméno (zobrazuje se veřejně), e-mail (neveřejný, slouží pro zaslání potvrzení, správy jízdy a notifikací), trasa jízdy, datum a čas odjezdu, počet volných míst a volitelná poznámka (např. typ auta, prostor pro zavazadla).
+								</li>
+								<li class="mb-2">
+									<strong>Spolujezdci (přihlášení k jízdě):</strong> Jméno (zobrazuje se u jízdy řidiči a spolujezdcům), e-mail (neveřejný), telefonní číslo (neveřejné, je předáno pouze řidiči jízdy pro operativní domluvu), místo nastoupení a volitelná poznámka.
+								</li>
+								<li class="mb-2">
+									<strong>Poptávající (upozornění na nové jízdy):</strong> E-mail (neveřejný, slouží výhradně pro zasílání automatických e-mailů o nově vypsaných jízdách na danou akci).
+								</li>
+							</ul>
+
+							<h2 class="h5 fw-bold mb-3 mt-4">
+								<i class="bi bi-info-circle"></i> 2. Účel a právní základ zpracování
+							</h2>
+							<p>
+								Osobní údaje zpracováváme za účelem <strong>zprostředkování a koordinace spolujízdy</strong> mezi účastníky akcí. 
+								Právním základem pro toto zpracování je:
+							</p>
+							<ul>
+								<li class="mb-1"><strong>Plnění dohody:</strong> Zpracování je nezbytné pro domluvu jízdy mezi řidičem a spolujezdcem.</li>
+								<li class="mb-1"><strong>Oprávněný zájem:</strong> Naším zájmem je usnadnit účastníkům dopravu na akce a snižovat ekologickou stopu (emise CO₂) prostřednictvím sdílení aut.</li>
+							</ul>
+							<p>
+								Vaše osobní údaje <strong>nepředáváme žádným dalším třetím stranám</strong> a nevyužíváme je pro marketingové účely. 
+								Kontaktní údaje (jako telefon spolujezdce) se zobrazí výhradně řidiči jízdy, ke které se přihlašujete, pro usnadnění domluvy odjezdu.
+							</p>
+
+							<h2 class="h5 fw-bold mb-3 mt-4">
+								<i class="bi bi-clock-history"></i> 3. Jak dlouho údaje uchováváme?
+							</h2>
+							<p>
+								Údaje o jízdách, spolujezdcích a poptávkách uchováváme po dobu nezbytnou k organizaci spolujízdy na konkrétní akci. 
+								Záznamy jsou v systému uchovávány po dobu konání dané akce a jsou z databáze automaticky mazány, případně anonymizovány (pro statistické účely CO₂) po jejím skončení.
+							</p>
+							<p>
+								Své údaje (nabídku jízdy, přihlášení nebo odběr upozornění) můžete kdykoliv sami smazat prostřednictvím odkazů pro správu, 
+								které jste obdrželi v potvrzovacích e-mailech.
+							</p>
+
+							<h2 class="h5 fw-bold mb-3 mt-4">
+								<i class="bi bi-cookie"></i> 4. Soubory cookies a lokální fonty
+							</h2>
+							<p>
+								Tento web využívá pouze <strong>nezbytné technické (funkční) cookies</strong>, které slouží k zajištění chodu aplikace (např. zabezpečení relace a přihlašování). Nepoužíváme žádné marketingové, sledovací ani analytické cookies třetích stran, a proto web <strong>nevyžaduje souhlas prostřednictvím cookie lišty</strong>.
+							</p>
+							<p>
+								Veškeré grafické a vizuální prvky, včetně písma (fontu Inter), jsou hostovány lokálně přímo na našem serveru. Nedochází k jejich načítání z externích serverů Google, čímž je zamezeno předávání vaší IP adresy a dalších údajů o prohlížeči třetím stranám.
+							</p>
+
+							<h2 class="h5 fw-bold mb-3 mt-4">
+								<i class="bi bi-shield-check"></i> 5. Vaše práva
+							</h2>
+							<p>
+								V souvislosti se zpracováním osobních údajů máte podle nařízení GDPR následující práva:
+							</p>
+							<ul>
+								<li>Právo na přístup k vašim osobním údajům a na informace o jejich zpracování.</li>
+								<li>Právo na opravu nepřesných nebo neúplných údajů.</li>
+								<li>Právo na výmaz osobních údajů (právo „být zapomenut“).</li>
+								<li>Právo na omezení zpracování.</li>
+								<li>Právo vznést námitku proti zpracování založeném na našem oprávněném zájmu.</li>
+							</ul>
+							<p>
+								Pokud si přejete svá práva uplatnit, nebo máte dotazy ohledně zpracování svých údajů, 
+								můžete nás kdykoliv kontaktovat na e-mailu: <a href="mailto:{$gdprEmail}">{$gdprEmail}</a>.
+							</p>
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
