@@ -78,14 +78,7 @@ php -r "echo password_hash('vase_heslo', PASSWORD_BCRYPT);"
 Importujte schéma do vaší MySQL databáze:
 
 ```bash
-mysql -u spolujizda -p spolujizda < app/Model/db_schema.sql
-```
-
-Poté spusťte migrace (v admin panelu nebo ručně):
-
-```bash
-mysql -u spolujizda -p spolujizda < migrations/001_create_migrations_table.sql
-mysql -u spolujizda -p spolujizda < migrations/002_baseline.sql
+mysql -u db_user -p db_name < app/Model/db_schema.sql
 ```
 
 ### 5. Oprávnění adresářů
@@ -167,7 +160,7 @@ Verze se automaticky čte z Git tagů.
 **Ruční aktualizace:**
 
 ```bash
-git pull origin main
+git pull origin master
 composer install --no-dev --optimize-autoloader
 ```
 
