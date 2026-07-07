@@ -60,6 +60,11 @@
 						<i class="bi bi-shield-check me-1"></i> GDPR / Soukromí
 					</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link {if $tab === 'donation'}active fw-bold text-primary{else}fw-medium text-secondary{/if}" n:href="this, tab => donation">
+						<i class="bi bi-heart-fill me-1"></i> Podpora / Darování
+					</a>
+				</li>
 			</ul>
 		</div>
 		<div class="card-body p-4">
@@ -293,6 +298,58 @@
 						<div class="col-12 mt-4 text-end">
 							<button n:name="submit" class="btn btn-primary fw-bold px-4">
 								<i class="bi bi-check-circle me-1"></i> Uložit nastavení GDPR
+							</button>
+						</div>
+					</div>
+				</form>
+			{/if}
+
+			{* --- TAB 5: PODPORA A DAROVÁNÍ --- *}
+			{if $tab === 'donation'}
+				<h5 class="fw-bold mb-3">
+					<i class="bi bi-heart-fill text-danger me-2"></i> Podpora a příspěvky provozovateli (hostiteli)
+				</h5>
+				
+				<div class="alert alert-info border-0 shadow-sm mb-4">
+					<i class="bi bi-info-circle-fill me-2"></i>
+					<strong>Podpora autora vs. Podpora provozovatele:</strong><br>
+					Podpora autora projektu (pro vývoj Spolujízdy) je v aplikaci zabudována fixně. Zde můžete nastavit volitelné platební údaje pro podporu <strong>provozu a hostingu této konkrétní instalace</strong> (např. pro vaši organizaci). Pokud tyto údaje vyplníte, na stránce podpory se uživatelům vedle podpory autora zobrazí další záložka s možností přispět vám.
+				</div>
+
+				<form n:name="donationSettingsForm">
+					<div class="alert alert-danger mb-3" n:if="$form->hasErrors()">
+						<ul class="mb-0 ps-3">
+							<li n:foreach="$form->errors as $error">{$error}</li>
+						</ul>
+					</div>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<label n:name="donationAccount" class="form-label fw-semibold">Bankovní účet pro dary:</label>
+							<input n:name="donationAccount" class="form-control">
+							<div class="form-text">Číslo bankovního účtu (např. <code>2900000000/2010</code>). Používá se pro zobrazení pokynů k platbě a vygenerování QR kódu.</div>
+						</div>
+
+						<div class="col-md-6">
+							<label n:name="donationMessage" class="form-label fw-semibold">Zpráva pro příjemce:</label>
+							<input n:name="donationMessage" class="form-control">
+							<div class="form-text">Zpráva pro příjemce, která se vyplní do pokynů k platbě a do QR kódu (např. <code>Dar Spolujízda</code>).</div>
+						</div>
+
+						<div class="col-md-12">
+							<label n:name="donationUrl" class="form-label fw-semibold">Odkaz na PayPal / Ko-fi / atd.: (volitelně)</label>
+							<input n:name="donationUrl" class="form-control">
+							<div class="form-text">Odkaz na externí platební bránu nebo profil (např. <code>https://paypal.me/jmeno</code> nebo <code>https://ko-fi.com/jmeno</code>).</div>
+						</div>
+
+						<div class="col-md-12">
+							<label n:name="donationText" class="form-label fw-semibold">Vlastní doprovodný text na stránce podpory (volitelně):</label>
+							<textarea n:name="donationText" class="form-control" rows="8"></textarea>
+							<div class="form-text">Ponechte prázdné pro použití výchozího textu. Podporuje HTML tagy (např. <code>&lt;p&gt;</code>, <code>&lt;strong&gt;</code> atd.).</div>
+						</div>
+
+						<div class="col-12 mt-4 text-end">
+							<button n:name="submit" class="btn btn-primary fw-bold px-4">
+								<i class="bi bi-check-circle me-1"></i> Uložit nastavení podpory
 							</button>
 						</div>
 					</div>

@@ -504,6 +504,13 @@ final class AdminPresenter extends BasePresenter
 			'gdprEmail' => $params['gdprEmail'] ?? '',
 			'gdprText' => $params['gdprText'] ?? '',
 		]);
+
+		$this['donationSettingsForm']->setDefaults([
+			'donationAccount' => $params['donationAccount'] ?? '',
+			'donationMessage' => $params['donationMessage'] ?? 'Dar Spolujízda',
+			'donationUrl' => $params['donationUrl'] ?? '',
+			'donationText' => $params['donationText'] ?? '',
+		]);
 	}
 
 
@@ -691,5 +698,45 @@ final class AdminPresenter extends BasePresenter
 			$this->flashMessage('Nepodařilo se uložit nastavení: ' . $e->getMessage(), 'danger');
 		}
 		$this->redirect('this', ['tab' => 'gdpr']);
+	}
+
+
+	protected function createComponentDonationSettingsForm(): Form
+	{
+		$form = new Form;
+
+		$form->addText('donationAccount', 'Bankovní účet pro dary:')
+			->setNullable()
+			->setHtmlAttribute('placeholder', 'např. 2900000000/2010');
+
+		$form->addText('donationMessage', 'Zpráva pro příjemce:')
+			->setNullable()
+			->setHtmlAttribute('placeholder', 'např. Dar Spolujízda');
+
+		$form->addText('donationUrl', 'Odkaz na PayPal / Ko-fi / atd.:')
+			->setNullable()
+			->setHtmlAttribute('placeholder', 'např. https://paypal.me/vasejmeno');
+
+		$form->addTextArea('donationText', 'Vlastní doprovodný text (volitelně):')
+			->setNullable()
+			->setHtmlAttribute('rows', 10);
+
+		$form->addSubmit('submit', 'Uložit nastavení podpory');
+
+		$form->onSuccess[] = [$this, 'donationSettingsFormSucceeded'];
+
+		return $form;
+	}
+
+
+	public function donationSettingsFormSucceeded(Form $form, \stdClass $values): void
+	{
+		try {
+			$this->settingsService->saveSettings((array) $values);
+			$this->flashMessage('Nastavení podpory a darování bylo úspěšně uloženo.', 'success');
+		} catch (\Exception $e) {
+			$this->flashMessage('Nepodařilo se uložit nastavení: ' . $e->getMessage(), 'danger');
+		}
+		$this->redirect('this', ['tab' => 'donation']);
 	}
 }

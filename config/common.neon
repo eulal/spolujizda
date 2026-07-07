@@ -12,6 +12,12 @@ parameters:
 	gdprEmail: ''
 	gdprText: ''
 
+	# Nastavení podpory a příspěvků autorovi
+	donationAccount: ''      # bankovní účet pro dary (např. 123456789/0100)
+	donationMessage: 'Dar Spolujízda'  # zpráva pro příjemce u bankovního převodu
+	donationUrl: ''          # odkaz na PayPal, Ko-fi, atd.
+	donationText: ''         # vlastní text na stránce podpory (HTML povoleno)
+
 
 application:
 	errorPresenter:

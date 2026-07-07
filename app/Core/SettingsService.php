@@ -42,6 +42,10 @@ final class SettingsService
 				'gdprAuthor' => '',
 				'gdprEmail' => '',
 				'gdprText' => '',
+				'donationAccount' => '',
+				'donationMessage' => 'Dar Spolujízda',
+				'donationUrl' => '',
+				'donationText' => '',
 			],
 			'mail' => [
 				'smtp' => false,
@@ -102,14 +106,26 @@ final class SettingsService
 		if (isset($values['removeGithubToken']) && $values['removeGithubToken']) {
 			$current['parameters']['githubToken'] = '';
 		}
-		if (isset($values['gdprAuthor'])) {
-			$current['parameters']['gdprAuthor'] = $values['gdprAuthor'];
+		if (array_key_exists('gdprAuthor', $values)) {
+			$current['parameters']['gdprAuthor'] = $values['gdprAuthor'] ?? '';
 		}
-		if (isset($values['gdprEmail'])) {
-			$current['parameters']['gdprEmail'] = $values['gdprEmail'];
+		if (array_key_exists('gdprEmail', $values)) {
+			$current['parameters']['gdprEmail'] = $values['gdprEmail'] ?? '';
 		}
-		if (isset($values['gdprText'])) {
-			$current['parameters']['gdprText'] = $values['gdprText'];
+		if (array_key_exists('gdprText', $values)) {
+			$current['parameters']['gdprText'] = $values['gdprText'] ?? '';
+		}
+		if (array_key_exists('donationAccount', $values)) {
+			$current['parameters']['donationAccount'] = $values['donationAccount'] ?? '';
+		}
+		if (array_key_exists('donationMessage', $values)) {
+			$current['parameters']['donationMessage'] = $values['donationMessage'] ?? '';
+		}
+		if (array_key_exists('donationUrl', $values)) {
+			$current['parameters']['donationUrl'] = $values['donationUrl'] ?? '';
+		}
+		if (array_key_exists('donationText', $values)) {
+			$current['parameters']['donationText'] = $values['donationText'] ?? '';
 		}
 
 		// Aktualizace hesla admina (pokud je zadáno)

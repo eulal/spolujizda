@@ -35,6 +35,18 @@ parameters:
 	# Vlastní text ochrany osobních údajů (volitelně přepisuje výchozí šablonu, podporuje HTML)
 	gdprText: ''
 
+	# Bankovní účet pro dary (např. 2900000000/2010)
+	donationAccount: ''
+
+	# Zpráva pro příjemce u platby/QR kódu (výchozí: 'Dar Spolujízda')
+	donationMessage: 'Dar Spolujízda'
+
+	# Odkaz na externí dárcovskou službu (např. PayPal, Ko-fi, atd.)
+	donationUrl: ''
+
+	# Vlastní text na stránce podpory (volitelně přepisuje výchozí popis, podporuje HTML)
+	donationText: ''
+
 database:
 	dsn: 'mysql:host=127.0.0.1;dbname=spolujizda'
 	user: 'spolujizda'

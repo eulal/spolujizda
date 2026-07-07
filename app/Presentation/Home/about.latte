@@ -1,0 +1,416 @@
+{block title}Líbí se vám Spolujízda?{/block}
+
+{block content}
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-10">
+			<div class="mb-4">
+				<a n:href="Home:default" class="text-decoration-none text-muted">
+					<i class="bi bi-arrow-left"></i> Zpět na hlavní stránku
+				</a>
+			</div>
+
+			<div class="card shadow-sm border-0 mb-5">
+				<div class="card-body p-4 p-md-5">
+					<div class="text-center mb-5">
+						<div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle p-3 mb-3" style="width: 80px; height: 80px;">
+							<i class="bi bi-heart-fill" style="font-size: 2.5rem;"></i>
+						</div>
+						<h1 class="h2 fw-bold">Líbí se vám Spolujízda?</h1>
+						<p class="text-muted lead col-md-8 mx-auto">
+							Děkujeme, že používáte naši aplikaci pro sdílení jízd. Zde se dozvíte, jak funguje, jak si ji můžete sami zdarma nasadit a jak můžete podpořit její vývoj.
+						</p>
+					</div>
+
+					<hr class="my-5">
+
+					<div class="row g-5">
+						{* --- LEVÝ SLOUPEC: O PROJEKTU A INSTALACI --- *}
+						<div class="col-md-6">
+							<h3 class="h4 fw-bold mb-4">
+								<i class="bi bi-info-circle text-primary me-2"></i> O projektu Spolujízda
+							</h3>
+							<p>
+								Aplikace <strong>Spolujízda</strong> vznikla jako jednoduchý, rychlý a přehledný nástroj pro koordinaci sdílené dopravy na semináře, přednášky, festivaly či jiné společné akce.
+							</p>
+							<p>
+								Umožňuje řidičům snadno nabídnout volná místa v autě a spolucestujícím se během pár kliknutí přihlásit – a to zcela <strong>bez nutnosti registrace</strong> nebo zakládání uživatelských účtů.
+							</p>
+
+							<h4 class="h5 fw-bold mt-5 mb-3">
+								<i class="bi bi-github text-dark me-2"></i> Svobodný software (Open Source)
+							</h4>
+							<p>
+								Spolujízda je vyvíjena jako open-source pod svobodnou licencí <strong>GNU GPL v3</strong>. To vám dává plnou svobodu:
+							</p>
+							<ul class="ps-3 mb-4">
+								<li class="mb-2"><strong>Zdarma ke stažení:</strong> Aplikaci si můžete stáhnout a nainstalovat na svůj vlastní server nebo webhosting.</li>
+								<li class="mb-2"><strong>Plná kontrola:</strong> Máte absolutní kontrolu nad daty uživatelů – žádná sledovací cookies třetích stran ani reklamy.</li>
+								<li class="mb-2"><strong>Možnost úprav:</strong> Kód si můžete libovolně upravit, přizpůsobit vzhled nebo přidat vlastní funkce.</li>
+							</ul>
+
+							<div class="d-grid d-sm-flex gap-2 mb-4">
+								<a href="https://github.com/{$githubRepo}" target="_blank" rel="noopener" class="btn btn-outline-dark fw-bold">
+									<i class="bi bi-github me-1"></i> Zdrojový kód na GitHubu
+								</a>
+							</div>
+
+							<h4 class="h5 fw-bold mt-5 mb-3">
+								<i class="bi bi-rocket-takeoff text-success me-2"></i> Jak si aplikaci nainstalovat?
+							</h4>
+							<p class="small text-muted">
+								Pro vlastní zprovoznění potřebujete webhosting s podporou PHP 8.2+ a databází MySQL.
+							</p>
+							<ol class="small text-muted ps-3">
+								<li class="mb-1">Stáhněte a rozbalte archiv ze stránky vydání na GitHubu.</li>
+								<li class="mb-1">Nainstalujte závislosti pomocí příkazu <code>composer install</code>.</li>
+								<li class="mb-1">Zkopírujte <code>config/local.neon.example</code> na <code>config/local.neon</code> a vyplňte přístup k DB a SMTP.</li>
+								<li class="mb-1">Nasměrujte kořenový adresář (document root) hostingu do složky <code>www/</code>.</li>
+							</ol>
+							<p class="small text-muted mb-3">
+								Podrobný návod k instalaci a konfiguraci naleznete v souboru <a href="https://github.com/{$githubRepo}#readme" target="_blank" rel="noopener">README.md</a>.
+							</p>
+							<div class="alert alert-light border small text-muted">
+								<i class="bi bi-envelope text-info me-1"></i>
+								Nevíte si rady s instalací? Neváhejte mi napsat na e-mail <a href="mailto:{$authorEmail}">{$authorEmail}</a>. Rád vám s nastavením a zprovozněním pomohu!
+							</div>
+						</div>
+
+						{* --- PRAVÝ SLOUPEC: PODPORA / PŘISPĚNÍ --- *}
+						<div class="col-md-6">
+							<div class="card bg-light border-0 h-100">
+								<div class="card-body p-4 p-lg-5">
+									<h3 class="h4 fw-bold mb-3">
+										<i class="bi bi-heart-fill text-danger me-2"></i> Podpořte projekt a provoz
+									</h3>
+									
+									<p class="text-muted small mb-4">
+										Aplikace je vyvíjena autorem jako otevřený software, ale její provoz a hosting na tomto webu zajišťuje hostitel. Můžete si vybrat, koho chcete podpořit.
+									</p>
+
+									{* --- PŘEPÍNAČ TABS --- *}
+									<ul class="nav nav-pills nav-fill mb-4 p-1 bg-white rounded shadow-sm" id="supportTabs" role="tablist">
+										<li class="nav-item" role="presentation">
+											<button class="nav-link active fw-bold small py-2" id="author-tab" data-bs-toggle="pill" data-bs-target="#author-pane" type="button" role="tab" aria-controls="author-pane" aria-selected="true">
+												<i class="bi bi-code-slash me-1"></i> Autorovi (vývoj)
+											</button>
+										</li>
+										{if !empty($donationAccount) || !empty($donationUrl)}
+											<li class="nav-item" role="presentation">
+												<button class="nav-link fw-bold small py-2" id="host-tab" data-bs-toggle="pill" data-bs-target="#host-pane" type="button" role="tab" aria-controls="host-pane" aria-selected="false">
+													<i class="bi bi-server me-1"></i> Provozovateli (provoz)
+												</button>
+											</li>
+										{/if}
+									</ul>
+
+									<div class="tab-content" id="supportTabsContent">
+										{* --- TAB 1: PODPORA AUTORA (VÝVOJ) --- *}
+										<div class="tab-pane fade show active" id="author-pane" role="tabpanel" aria-labelledby="author-tab">
+											<p class="small mb-4">
+												Vývoji této aplikace věnuje autor spoustu volného času. Finančním příspěvkem podpoříte programování, vývoj nových funkcí a provoz hlavní větve projektu.
+											</p>
+
+											{if !empty($authorNumber) && !empty($authorBank)}
+												<div class="card border-0 shadow-sm bg-white p-4">
+													<h5 class="fw-bold text-center mb-3">
+														<i class="bi bi-qr-code-scan text-primary me-1"></i> QR platba pro autora
+													</h5>
+
+													<div class="text-center mb-3">
+														<img id="authorQrCodeImage" 
+															 src="https://api.paylibo.com/paylibo/generator/czech/image?{if !empty($authorPrefix)}accountPrefix={$authorPrefix}&{/if}accountNumber={$authorNumber}&bankCode={$authorBank}&amount=200&currency=CZK&message={$authorMessage|escapeUrl}" 
+															 alt="QR Platba pro autora" 
+															 class="img-fluid rounded border p-2 bg-white" 
+															 style="max-height: 220px; transition: opacity 0.2s ease;">
+													</div>
+
+													{* Tlačítka pro rychlý výběr částky *}
+													<div class="d-flex justify-content-center gap-2 mb-3 flex-wrap">
+														<button type="button" class="btn btn-sm btn-outline-primary fw-semibold px-3 author-qr-amount-btn" data-amount="100">100 Kč</button>
+														<button type="button" class="btn btn-sm btn-primary fw-semibold px-3 author-qr-amount-btn" data-amount="200" id="authorDefaultAmountBtn">200 Kč</button>
+														<button type="button" class="btn btn-sm btn-outline-primary fw-semibold px-3 author-qr-amount-btn" data-amount="500">500 Kč</button>
+														<button type="button" class="btn btn-sm btn-outline-secondary fw-semibold px-3" id="authorCustomAmountToggleBtn">Jiná...</button>
+													</div>
+
+													{* Vlastní částka *}
+													<div class="mb-3 d-none" id="authorCustomAmountWrapper">
+														<div class="input-group input-group-sm mx-auto" style="max-width: 200px;">
+															<input type="number" id="authorCustomAmountInput" class="form-control text-center" placeholder="Vlastní částka" min="10" max="100000" value="200">
+															<span class="input-group-text">Kč</span>
+														</div>
+													</div>
+
+													<div class="small border-top pt-3 mt-2 text-center text-muted">
+														<div class="mb-1"><strong>Číslo účtu:</strong> {$authorAccount}</div>
+														<div class="mb-1"><strong>Zpráva pro příjemce:</strong> <code>{$authorMessage}</code></div>
+														<div><strong>Aktuální částka:</strong> <span id="authorCurrentAmountText" class="fw-bold text-dark">200</span> Kč</div>
+													</div>
+												</div>
+											{/if}
+										</div>
+
+										{* --- TAB 2: PODPORA PROVOZOVATELE (PROVOZ) --- *}
+										{if !empty($donationAccount) || !empty($donationUrl)}
+											<div class="tab-pane fade" id="host-pane" role="tabpanel" aria-labelledby="host-tab">
+												{if !empty($donationText)}
+													<div class="donation-custom-text mb-4 small">
+														{$donationText|noescape}
+													</div>
+												{else}
+													<p class="small mb-4">
+														Tento konkrétní web provozuje a financuje <strong>{$gdprAuthor}</strong>. Zasláním příspěvku pomůžete krýt náklady na hosting, doménu a administraci této instalace.
+													</p>
+												{/if}
+
+												{* Odkaz na externí platební brány (PayPal, Ko-Fi atd.) *}
+												{if !empty($donationUrl)}
+													<div class="mb-4 d-grid">
+														<a href="{$donationUrl}" target="_blank" rel="noopener" class="btn btn-danger btn-lg fw-bold shadow-sm py-3 transition-btn">
+															<i class="bi bi-heart-fill me-2 text-white heart-pulse"></i> Přispět online (provoz)
+														</a>
+													</div>
+												{/if}
+
+												{* QR Kód a Bankovní převod provozovatele *}
+												{if !empty($payliboNumber) && !empty($payliboBank)}
+													<div class="card border-0 shadow-sm bg-white p-4">
+														<h5 class="fw-bold text-center mb-3">
+															<i class="bi bi-qr-code-scan text-primary me-1"></i> QR platba pro provozovatele
+														</h5>
+
+														<div class="text-center mb-3">
+															<img id="operatorQrCodeImage" 
+																 src="https://api.paylibo.com/paylibo/generator/czech/image?{if !empty($payliboPrefix)}accountPrefix={$payliboPrefix}&{/if}accountNumber={$payliboNumber}&bankCode={$payliboBank}&amount=200&currency=CZK&message={$donationMessage|escapeUrl}" 
+																 alt="QR Platba pro provozovatele" 
+																 class="img-fluid rounded border p-2 bg-white" 
+																 style="max-height: 220px; transition: opacity 0.2s ease;">
+														</div>
+
+														{* Tlačítka pro rychlý výběr částky *}
+														<div class="d-flex justify-content-center gap-2 mb-3 flex-wrap">
+															<button type="button" class="btn btn-sm btn-outline-primary fw-semibold px-3 operator-qr-amount-btn" data-amount="100">100 Kč</button>
+															<button type="button" class="btn btn-sm btn-primary fw-semibold px-3 operator-qr-amount-btn" data-amount="200" id="operatorDefaultAmountBtn">200 Kč</button>
+															<button type="button" class="btn btn-sm btn-outline-primary fw-semibold px-3 operator-qr-amount-btn" data-amount="500">500 Kč</button>
+															<button type="button" class="btn btn-sm btn-outline-secondary fw-semibold px-3" id="operatorCustomAmountToggleBtn">Jiná...</button>
+														</div>
+
+														{* Vlastní částka *}
+														<div class="mb-3 d-none" id="operatorCustomAmountWrapper">
+															<div class="input-group input-group-sm mx-auto" style="max-width: 200px;">
+																<input type="number" id="operatorCustomAmountInput" class="form-control text-center" placeholder="Vlastní částka" min="10" max="100000" value="200">
+																<span class="input-group-text">Kč</span>
+															</div>
+														</div>
+
+														<div class="small border-top pt-3 mt-2 text-center text-muted">
+															<div class="mb-1"><strong>Číslo účtu:</strong> {$donationAccount}</div>
+															<div class="mb-1"><strong>Zpráva pro příjemce:</strong> <code>{$donationMessage}</code></div>
+															<div><strong>Aktuální částka:</strong> <span id="operatorCurrentAmountText" class="fw-bold text-dark">200</span> Kč</div>
+														</div>
+													</div>
+												{elseif !empty($donationAccount)}
+													{* Jen textové info o účtu, pokud není validní formát pro QR platbu *}
+													<div class="card border-0 shadow-sm bg-white p-4 text-center">
+														<h5 class="fw-bold mb-3"><i class="bi bi-bank text-primary me-1"></i> Bankovní převod</h5>
+														<p class="mb-1"><strong>Číslo účtu:</strong></p>
+														<h4 class="fw-bold text-primary mb-3">{$donationAccount}</h4>
+														<p class="small text-muted mb-0">
+															Zpráva pro příjemce: <code>{$donationMessage}</code>
+														</p>
+													</div>
+												{/if}
+											</div>
+										{/if}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{* --- STYLY A INTERAKTIVNÍ SKRIPT --- *}
+<style>
+	.heart-pulse {
+		display: inline-block;
+		animation: pulse 1.5s infinite;
+	}
+	@keyframes pulse {
+		0% { transform: scale(1); }
+		50% { transform: scale(1.15); }
+		100% { transform: scale(1); }
+	}
+	.transition-btn {
+		transition: all 0.2s ease-in-out;
+	}
+	.transition-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+	}
+</style>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		// --- A: PODPORA AUTORA (VÝVOJ) ---
+		{if !empty($authorNumber) && !empty($authorBank)}
+		(() => {
+			const prefix = {$authorPrefix};
+			const number = {$authorNumber};
+			const bank = {$authorBank};
+			const message = {$authorMessage};
+
+			const qrImage = document.getElementById('authorQrCodeImage');
+			const amountBtns = document.querySelectorAll('.author-qr-amount-btn');
+			const customAmountToggleBtn = document.getElementById('authorCustomAmountToggleBtn');
+			const customAmountWrapper = document.getElementById('authorCustomAmountWrapper');
+			const customAmountInput = document.getElementById('authorCustomAmountInput');
+			const currentAmountText = document.getElementById('authorCurrentAmountText');
+
+			function updateQrCode(amount) {
+				if (!amount || isNaN(amount) || amount <= 0) return;
+				
+				currentAmountText.textContent = amount;
+
+				// Fade out image while loading new one
+				qrImage.style.opacity = 0.5;
+
+				const cleanMsg = encodeURIComponent(message);
+				const prefixParam = prefix ? `accountPrefix=${ prefix }&` : '';
+				const newSrc = `https://api.paylibo.com/paylibo/generator/czech/image?${ prefixParam }accountNumber=${ number }&bankCode=${ bank }&amount=${ amount }&currency=CZK&message=${ cleanMsg }`;
+				
+				const tempImg = new Image();
+				tempImg.onload = () => {
+					qrImage.src = newSrc;
+					qrImage.style.opacity = 1;
+				};
+				tempImg.src = newSrc;
+			}
+
+			amountBtns.forEach(btn => {
+				btn.addEventListener('click', () => {
+					// Reset active state on buttons
+					amountBtns.forEach(b => {
+						b.classList.remove('btn-primary');
+						b.classList.add('btn-outline-primary');
+					});
+					customAmountToggleBtn.classList.remove('btn-secondary');
+					customAmountToggleBtn.classList.add('btn-outline-secondary');
+					customAmountWrapper.classList.add('d-none');
+
+					// Activate current
+					btn.classList.remove('btn-outline-primary');
+					btn.classList.add('btn-primary');
+
+					const amount = btn.getAttribute('data-amount');
+					updateQrCode(amount);
+				});
+			});
+
+			customAmountToggleBtn.addEventListener('click', () => {
+				// Deactivate fixed buttons
+				amountBtns.forEach(b => {
+					b.classList.remove('btn-primary');
+					b.classList.add('btn-outline-primary');
+				});
+
+				customAmountToggleBtn.classList.remove('btn-outline-secondary');
+				customAmountToggleBtn.classList.add('btn-secondary');
+				customAmountWrapper.classList.remove('d-none');
+
+				updateQrCode(customAmountInput.value);
+			});
+
+			customAmountInput.addEventListener('input', () => {
+				const value = parseInt(customAmountInput.value, 10);
+				if (value >= 10) {
+					updateQrCode(value);
+				}
+			});
+		})();
+		{/if}
+
+		// --- B: PODPORA PROVOZOVATELE (PROVOZ) ---
+		{if !empty($payliboNumber) && !empty($payliboBank)}
+		(() => {
+			const prefix = {$payliboPrefix};
+			const number = {$payliboNumber};
+			const bank = {$payliboBank};
+			const message = {$donationMessage};
+
+			const qrImage = document.getElementById('operatorQrCodeImage');
+			const amountBtns = document.querySelectorAll('.operator-qr-amount-btn');
+			const customAmountToggleBtn = document.getElementById('operatorCustomAmountToggleBtn');
+			const customAmountWrapper = document.getElementById('operatorCustomAmountWrapper');
+			const customAmountInput = document.getElementById('operatorCustomAmountInput');
+			const currentAmountText = document.getElementById('operatorCurrentAmountText');
+
+			function updateQrCode(amount) {
+				if (!amount || isNaN(amount) || amount <= 0) return;
+				
+				currentAmountText.textContent = amount;
+
+				// Fade out image while loading new one
+				qrImage.style.opacity = 0.5;
+
+				const cleanMsg = encodeURIComponent(message);
+				const prefixParam = prefix ? `accountPrefix=${ prefix }&` : '';
+				const newSrc = `https://api.paylibo.com/paylibo/generator/czech/image?${ prefixParam }accountNumber=${ number }&bankCode=${ bank }&amount=${ amount }&currency=CZK&message=${ cleanMsg }`;
+				
+				const tempImg = new Image();
+				tempImg.onload = () => {
+					qrImage.src = newSrc;
+					qrImage.style.opacity = 1;
+				};
+				tempImg.src = newSrc;
+			}
+
+			amountBtns.forEach(btn => {
+				btn.addEventListener('click', () => {
+					// Reset active state on buttons
+					amountBtns.forEach(b => {
+						b.classList.remove('btn-primary');
+						b.classList.add('btn-outline-primary');
+					});
+					customAmountToggleBtn.classList.remove('btn-secondary');
+					customAmountToggleBtn.classList.add('btn-outline-secondary');
+					customAmountWrapper.classList.add('d-none');
+
+					// Activate current
+					btn.classList.remove('btn-outline-primary');
+					btn.classList.add('btn-primary');
+
+					const amount = btn.getAttribute('data-amount');
+					updateQrCode(amount);
+				});
+			});
+
+			customAmountToggleBtn.addEventListener('click', () => {
+				// Deactivate fixed buttons
+				amountBtns.forEach(b => {
+					b.classList.remove('btn-primary');
+					b.classList.add('btn-outline-primary');
+				});
+
+				customAmountToggleBtn.classList.remove('btn-outline-secondary');
+				customAmountToggleBtn.classList.add('btn-secondary');
+				customAmountWrapper.classList.remove('d-none');
+
+				updateQrCode(customAmountInput.value);
+			});
+
+			customAmountInput.addEventListener('input', () => {
+				const value = parseInt(customAmountInput.value, 10);
+				if (value >= 10) {
+					updateQrCode(value);
+				}
+			});
+		})();
+		{/if}
+	});
+</script>
+{/block}
