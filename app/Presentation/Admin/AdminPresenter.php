@@ -9,18 +9,19 @@ use App\Model\Co2Service;
 use App\Model\EmailService;
 use App\Model\RideRequestRepository;
 use App\Presentation\BasePresenter;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
 
 
 final class AdminPresenter extends BasePresenter
 {
-	/** @persistent */
+	#[Persistent]
 	public string $tab = 'application';
 
-	/** @persistent */
+	#[Persistent]
 	public string $eventsTab = 'active';
 
-	/** @persistent */
+	#[Persistent]
 	public string $detailTab = 'there';
 
 	public function __construct(

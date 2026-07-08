@@ -40,3 +40,10 @@ di:
 	export:
 		parameters: no
 		tags: no
+
+
+assets:
+	basePath: %wwwDir%
+	baseUrl: %baseUrl%
+	mapping:
+		default: ''
