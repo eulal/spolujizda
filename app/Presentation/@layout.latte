@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{ifset title}{include title|stripHtml} | {/ifset}Spolujízda</title>
+	<title>{ifset title}{include title|stripHtml} | {/ifset}{$appName}</title>
 	<meta name="description" content="Plánování sdílených jízd pro účastníky seminářů a akcí.">
 
 	<link rel="icon" href="{$basePath}/favicon.ico" sizes="any">
@@ -23,7 +23,7 @@
 	<nav class="navbar navbar-expand-lg navbar-dark">
 		<div class="container">
 			<a class="navbar-brand" n:href="Home:default">
-				<i class="bi bi-car-front-fill"></i> Spolujízda
+				<i class="bi bi-{$appIcon}"></i> {$appName}
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
@@ -105,8 +105,8 @@
 	<footer>
 		<div class="container text-center">
 			<small>
-				Spolujízda &copy; {date('Y')} · Plánování sdílených jízd pro účastníky akcí · v{App\Core\Version::get()}<br>
-				<a n:href="Home:about"><i class="bi bi-heart-fill text-danger"></i> Líbí se vám Spolujízda?</a> ·
+				{$appName} &copy; {date('Y')} · Plánování sdílených jízd pro účastníky akcí · v{App\Core\Version::get()}<br>
+				<a n:href="Home:about"><i class="bi bi-heart-fill text-danger"></i> Líbí se vám {$appName}?</a> ·
 				<a href="https://github.com/eulal/spolujizda" target="_blank" rel="noopener"><i class="bi bi-github"></i> GNU GPL v3 Open Source</a> ·
 				<a n:href="Home:co2Metodologie"><i class="bi bi-leaf"></i> Metodologie CO₂</a> ·
 				<a n:href="Home:gdpr"><i class="bi bi-shield-check"></i> Ochrana osobních údajů (GDPR)</a>

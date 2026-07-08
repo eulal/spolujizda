@@ -33,6 +33,8 @@ final class SettingsService
 		$local = $this->getSettings();
 		$defaults = [
 			'parameters' => [
+				'appName' => 'Spolujízda',
+				'appIcon' => 'car-front-fill',
 				'baseUrl' => '',
 				'mailFrom' => 'spolujizda@example.com',
 				'mailFromName' => 'Spolujízda',
@@ -85,6 +87,12 @@ final class SettingsService
 		}
 
 		// Aktualizace parametrů
+		if (isset($values['appName'])) {
+			$current['parameters']['appName'] = $values['appName'];
+		}
+		if (isset($values['appIcon'])) {
+			$current['parameters']['appIcon'] = $values['appIcon'];
+		}
 		if (isset($values['baseUrl'])) {
 			$current['parameters']['baseUrl'] = rtrim($values['baseUrl'], '/');
 		}

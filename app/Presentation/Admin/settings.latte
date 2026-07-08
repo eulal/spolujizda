@@ -80,6 +80,44 @@
 						</ul>
 					</div>
 					<div class="row g-3">
+						<div class="col-md-6">
+							<label n:name="appName" class="form-label fw-semibold">Název aplikace:</label>
+							<input n:name="appName" class="form-control">
+							<div class="form-text">Zobrazuje se v hlavičce, patičce a v názvech stránek (např. <code>Spolujízda</code>).</div>
+						</div>
+
+						<div class="col-md-6">
+							<label class="form-label fw-semibold d-block">Ikona aplikace:</label>
+							<input type="hidden" n:name="appIcon" id="appIconInput">
+							<div class="d-flex flex-wrap gap-2 mt-1">
+								{var $icons = [
+									'car-front-fill' => ['Autíčko', 'car-front-fill'],
+									'truck' => ['Dodávka', 'truck'],
+									'compass' => ['Kompas', 'compass'],
+									'globe' => ['Zeměkoule', 'globe'],
+									'map' => ['Mapa', 'map'],
+									'calendar-event' => ['Kalendář', 'calendar-event'],
+									'people-fill' => ['Lidé', 'people-fill'],
+									'heart-fill' => ['Srdce', 'heart-fill'],
+									'star-fill' => ['Hvězda', 'star-fill'],
+									'signpost-split-fill' => ['Rozcestník', 'signpost-split-fill'],
+									'geo-alt-fill' => ['Místo', 'geo-alt-fill'],
+									'bicycle' => ['Kolo', 'bicycle']
+								]}
+								{foreach $icons as $iconKey => $iconInfo}
+									<button type="button" 
+											class="btn btn-outline-secondary p-2 d-flex flex-column align-items-center justify-content-center icon-select-btn" 
+											data-icon="{$iconKey}"
+											style="width: 76px; height: 76px; font-size: 0.75rem;"
+											title="{$iconInfo[0]}">
+										<i class="bi bi-{$iconInfo[1]} fs-4 mb-1"></i>
+										<span class="text-truncate w-100 text-center" style="font-size: 0.65rem;">{$iconInfo[0]}</span>
+									</button>
+								{/foreach}
+							</div>
+							<div class="form-text">Vyberte ikonu zobrazenou v záhlaví.</div>
+						</div>
+
 						<div class="col-md-12">
 							<label n:name="baseUrl" class="form-label fw-semibold">Base URL aplikace:</label>
 							<input n:name="baseUrl" class="form-control">
@@ -360,8 +398,8 @@
 </div>
 
 <script>
-	// Toggle SMTP block visibility
 	document.addEventListener('DOMContentLoaded', () => {
+		// Toggle SMTP block visibility
 		const smtpSwitch = document.getElementById('smtpSwitch');
 		const smtpBlock = document.getElementById('smtpSettingsBlock');
 
@@ -372,6 +410,35 @@
 				} else {
 					smtpBlock.classList.add('d-none');
 				}
+			});
+		}
+
+		// App Icon selection logic
+		const appIconInput = document.getElementById('appIconInput');
+		const iconBtns = document.querySelectorAll('.icon-select-btn');
+
+		if (appIconInput && iconBtns.length > 0) {
+			function selectIcon(iconKey) {
+				appIconInput.value = iconKey;
+				iconBtns.forEach(btn => {
+					if (btn.getAttribute('data-icon') === iconKey) {
+						btn.classList.remove('btn-outline-secondary');
+						btn.classList.add('btn-primary', 'active');
+					} else {
+						btn.classList.remove('btn-primary', 'active');
+						btn.classList.add('btn-outline-secondary');
+					}
+				});
+			}
+
+			// Initialize based on current input value
+			selectIcon(appIconInput.value || 'car-front-fill');
+
+			iconBtns.forEach(btn => {
+				btn.addEventListener('click', (e) => {
+					e.preventDefault();
+					selectIcon(btn.getAttribute('data-icon'));
+				});
 			});
 		}
 	});

@@ -30,7 +30,6 @@ final class AdminPresenter extends BasePresenter
 		private Co2Service $co2Service,
 		private EmailService $emailService,
 		private UpdateService $updateService,
-		private \App\Core\SettingsService $settingsService,
 		private RideRequestRepository $rideRequestRepository,
 	) {
 	}
@@ -482,6 +481,8 @@ final class AdminPresenter extends BasePresenter
 		$mail = $settings['mail'] ?? [];
 
 		$this['applicationSettingsForm']->setDefaults([
+			'appName' => $params['appName'] ?? 'Spolujízda',
+			'appIcon' => $params['appIcon'] ?? 'car-front-fill',
 			'baseUrl' => $params['baseUrl'] ?? '',
 			'co2EmissionFactor' => $params['co2EmissionFactor'] ?? 0.150,
 			'githubRepo' => $params['githubRepo'] ?? 'owner/repo',
@@ -528,6 +529,13 @@ final class AdminPresenter extends BasePresenter
 	protected function createComponentApplicationSettingsForm(): Form
 	{
 		$form = new Form;
+
+		$form->addText('appName', 'Název aplikace:')
+			->setRequired('Zadejte název aplikace.')
+			->setHtmlAttribute('placeholder', 'např. Spolujízda');
+
+		$form->addHidden('appIcon')
+			->setRequired('Vyberte ikonu aplikace.');
 
 		$form->addText('baseUrl', 'Base URL aplikace:')
 			->setRequired('Zadejte URL aplikace.')

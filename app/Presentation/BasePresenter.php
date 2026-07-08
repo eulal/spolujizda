@@ -14,6 +14,9 @@ abstract class BasePresenter extends Presenter
 	/** @inject */
 	public \App\Model\AnonymizationService $anonymizationService;
 
+	/** @inject */
+	public \App\Core\SettingsService $settingsService;
+
 
 	protected function startup(): void
 	{
@@ -30,6 +33,16 @@ abstract class BasePresenter extends Presenter
 				\Tracy\Debugger::log($e, \Tracy\ILogger::ERROR);
 			}
 		}
+	}
+
+
+	protected function beforeRender(): void
+	{
+		parent::beforeRender();
+		$settings = $this->settingsService->getMergedSettings();
+		$params = $settings['parameters'] ?? [];
+		$this->template->appName = !empty($params['appName']) ? $params['appName'] : 'Spolujízda';
+		$this->template->appIcon = !empty($params['appIcon']) ? $params['appIcon'] : 'car-front-fill';
 	}
 
 

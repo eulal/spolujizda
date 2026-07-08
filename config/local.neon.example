@@ -9,6 +9,12 @@ parameters:
 	# URL aplikace (pro odkazy v e-mailech)
 	baseUrl: 'https://spolujizda.example.com'
 
+	# Název aplikace
+	appName: 'Spolujízda'
+
+	# Ikona aplikace (název z Bootstrap Icons, např. car-front-fill, truck, compass, atd.)
+	appIcon: 'car-front-fill'
+
 	# Odchozí adresa pro e-maily
 	mailFrom: 'noreply@example.com'
 
