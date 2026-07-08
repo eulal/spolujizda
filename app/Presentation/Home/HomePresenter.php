@@ -59,9 +59,9 @@ final class HomePresenter extends BasePresenter
 
 
 	// Detaily pro podporu autora projektu (fixní)
-	private const AUTHOR_DONATION_ACCOUNT = '670100-2202698530/6210';
+	private const AUTHOR_DONATION_ACCOUNT = '1317765022/3030';
 	private const AUTHOR_DONATION_MESSAGE = 'Dar Spolujízda';
-	private const AUTHOR_EMAIL = 'eulal@riseup.net';
+	private const AUTHOR_EMAIL = 'it-eulal@riseup.net';
 
 
 	/**
