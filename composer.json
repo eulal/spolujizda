@@ -1,9 +1,16 @@
 {
-	"name": "nette/web-project",
-	"description": "Nette: Standard Web Project",
-	"keywords": ["nette"],
+	"name": "eulal/spolujizda",
+	"description": "Webová aplikace pro organizaci sdílených jízd na semináře a akce.",
+	"keywords": ["spolujizda", "carsharing", "nette", "php"],
+	"homepage": "https://github.com/eulal/spolujizda",
 	"type": "project",
 	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "eulal",
+			"email": "it-eulal@riseup.net"
+		}
+	],
 	"require": {
 		"php": ">= 8.2",
 		"nette/application": "^3.2.3",
